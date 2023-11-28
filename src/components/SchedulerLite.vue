@@ -1,16 +1,3 @@
-<!---
- vue3-scheduler-lite
-
- A support drag and drop scheduler on Vue3.0
-
- @date   2020/10/11
- @author Lin Masahiro(k80092@hotmail.com)
- @see https://github.com/linmasahiro/vue3-scheduler-lite
-
- (c) 2020 Lin masahiro
- Released under the MIT License.
---->
-
 <template>
   <div class="schedule" @dragover="disableDragendAnimation">
     <div>
@@ -147,7 +134,7 @@
 
 <script>
 /* eslint-disable */
-import { defineComponent, reactive, watch } from "vue";
+import { defineComponent, reactive } from "vue";
 import UnitDiv from "./UnitDev.vue";
 import ReservedDiv from "./ReserveDiv.vue";
 
