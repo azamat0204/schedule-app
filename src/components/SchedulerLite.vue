@@ -194,7 +194,7 @@ export default defineComponent({
 
     const disableDragendAnimation = (e) => e.preventDefault()
 
-    const getHeaderDate = (n) => moment(addMonths(new Date(state.settingData.startDate), n)).format('YYYY-MM-DD')
+    const getHeaderDate = (n) => moment(addMonths(new Date(state.settingData.startDate), n)).format('DD-MM-YYYY')
     const datetimeFormatter = (dateObj) => moment(dateObj).format('YYYY/MM/DD HH:mm')
     /**
      * Add days to object
