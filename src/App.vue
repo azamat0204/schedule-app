@@ -173,16 +173,16 @@ const sampleData = [
 ];
 
 const sampleSetting = {
-  startDate: "2020/04/20",
-  endDate: "2020/04/26",
-  weekdayText: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
+  startDate: "2023/11/01",
+  endDate: "2023/12/01",
+  weekdayText: ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"],
   unit: 60, // Minutes
   borderW: 1, // Px
-  dateDivH: 25, // Px
-  timeDivH: 25, // Px
-  unitDivW: 25, // Px
-  titleDivW: 20, // Percent
-  rowH: 135, // Px
+  dateDivH: 25, // Высота дней (месяцев в будущем)
+  timeDivH: 25, // Высота времени (дней в будушем)
+  unitDivW: 50, // Ширина отдельной ячейки в таблице
+  titleDivW: 20, //  Длина навзвании комнат в процентах
+  rowH: 50, //  Высота столбцов в px
 };
 
 export default {
