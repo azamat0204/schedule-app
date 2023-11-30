@@ -57,7 +57,7 @@ export default defineComponent({
         Opacity: 1,
         left: "0px",
         width: "0px",
-        height: "130px",
+        height: "50px",
       },
       isShow: false,
       mouseXStarted: null,
@@ -312,12 +312,12 @@ export default defineComponent({
         }
     );
 
-    if (
-        new Date(props.startText) - new Date(props.minDate) < 0 &&
-        new Date(props.endText) - new Date(props.minDate) < 0
-    ) {
-      return;
-    }
+    // if (
+    //     new Date(props.startText) - new Date(props.minDate) < 0 &&
+    //     new Date(props.endText) - new Date(props.minDate) < 0
+    // ) {
+    //   return;
+    // }
     setLeftPosition();
     setWidth();
     state.isShow = true;

@@ -173,9 +173,8 @@ const sampleData = [
 ];
 
 const sampleSetting = {
-  startDate: "2023/11/01",
-  endDate: "2023/12/01",
-  weekdayText: ["Вс", "Пн", "Вт", "Ср", "Чт", "Пт", "Сб"],
+  startDate: "2023/01/01",
+  endDate: "2023/02/30",
   unit: 60, // Minutes
   borderW: 1, // Px
   dateDivH: 25, // Высота дней (месяцев в будущем)
@@ -184,6 +183,8 @@ const sampleSetting = {
   titleDivW: 20, //  Длина навзвании комнат в процентах
   rowH: 50, //  Высота столбцов в px
 };
+
+
 
 export default {
   name: "App",

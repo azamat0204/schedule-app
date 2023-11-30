@@ -90,45 +90,45 @@
                   @set-dragenter-row-and-index="setDragenterRowAndIndex"
               >
               </unit-div>
-<!--              <reserved-div-->
-<!--                  v-for="(detail, keyNo) in row.schedule"-->
-<!--                  :key="'res' + keyNo"-->
-<!--                  :schedule-detail="detail"-->
-<!--                  :row-index="index"-->
-<!--                  :key-no="keyNo"-->
-<!--                  :start-text="detail.start"-->
-<!--                  :end-text="detail.end"-->
-<!--                  :content-text="detail.text"-->
-<!--                  :unit-width="state.settingData.unitDivW"-->
-<!--                  :unit-height="state.settingData.rowH"-->
-<!--                  :title-div-width="state.settingData.titleDivW"-->
-<!--                  :border-width="state.settingData.borderW"-->
-<!--                  :min-date="state.settingData.startDate"-->
-<!--                  :max-date="state.settingData.endDate"-->
-<!--                  :unit="state.settingData.unit"-->
-<!--                  :clear-switch="state.clearSwitch"-->
-<!--                  :dragenter-row-index="state.dragenterRowIndex"-->
-<!--                  :dragenter-key-index="state.dragenterKeyIndex"-->
-<!--                  :is-selecting="state.isSelecting"-->
-<!--                  :is-selecting-row-index="state.isSelectingRowIndex"-->
-<!--                  :is-selecting-index="state.isSelectingIndex"-->
-<!--                  @set-dragenter-row-and-index="setDragenterRowAndIndex"-->
-<!--                  @move-schedule-data="moveScheduleData"-->
-<!--                  @edit-schedule-data="editScheduleData"-->
-<!--                  @delete-schedule-data="deleteScheduleData"-->
-<!--                  @mouse-up="selectEndTime"-->
-<!--                  @move-event="$emit('move-event')"-->
-<!--                  @edit-event="$emit('edit-event', detail.start, detail.end)"-->
-<!--                  @click-event="-->
-<!--                  $emit(-->
-<!--                    'click-event',-->
-<!--                    detail.start,-->
-<!--                    detail.end,-->
-<!--                    detail.text,-->
-<!--                    detail.data-->
-<!--                  )-->
-<!--                "-->
-<!--              ></reserved-div>-->
+              <reserved-div
+                  v-for="(detail, keyNo) in row.schedule"
+                  :key="'res' + keyNo"
+                  :schedule-detail="detail"
+                  :row-index="index"
+                  :key-no="keyNo"
+                  :start-text="detail.start"
+                  :end-text="detail.end"
+                  :content-text="detail.text"
+                  :unit-width="state.settingData.unitDivW"
+                  :unit-height="state.settingData.rowH"
+                  :title-div-width="state.settingData.titleDivW"
+                  :border-width="state.settingData.borderW"
+                  :min-date="state.settingData.startDate"
+                  :max-date="state.settingData.endDate"
+                  :unit="state.settingData.unit"
+                  :clear-switch="state.clearSwitch"
+                  :dragenter-row-index="state.dragenterRowIndex"
+                  :dragenter-key-index="state.dragenterKeyIndex"
+                  :is-selecting="state.isSelecting"
+                  :is-selecting-row-index="state.isSelectingRowIndex"
+                  :is-selecting-index="state.isSelectingIndex"
+                  @set-dragenter-row-and-index="setDragenterRowAndIndex"
+                  @move-schedule-data="moveScheduleData"
+                  @edit-schedule-data="editScheduleData"
+                  @delete-schedule-data="deleteScheduleData"
+                  @mouse-up="selectEndTime"
+                  @move-event="$emit('move-event')"
+                  @edit-event="$emit('edit-event', detail.start, detail.end)"
+                  @click-event="
+                  $emit(
+                    'click-event',
+                    detail.start,
+                    detail.end,
+                    detail.text,
+                    detail.data
+                  )
+                "
+              ></reserved-div>
             </div>
           </div>
         </div>
@@ -164,7 +164,6 @@ export default defineComponent({
       settingData: {
         startDate: "2020/04/20",
         endDate: "2020/04/26",
-        weekdayText: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"],
         unit: 60,
         borderW: 1,
         dateDivH: 25,
@@ -232,27 +231,7 @@ export default defineComponent({
       let startDate = addMonths(new Date(state.settingData.startDate), n);
       return dateFormatter(startDate);
     };
-    /**
-     * Get header area time-text
-     *
-     * @param {*} n Col index
-     */
-    const getHeaderTime = (n) => {
-      return n % 24;
-    };
-    /**
-     * Get diff day between date1 and date2
-     *
-     * @param Object date1 DateObejct1
-     * @param Object date2 DateObejct2
-     *
-     * @returns Int
-     */
-    const getDateDiff = (date1, date2) => {
-      const diffTime = Math.abs(date2 - date1);
-      // количество дней - 1 (Возвращает сколько дней между промежутками)
-      return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    };
+
     /**
      * Custom date formatter
      *
@@ -261,18 +240,13 @@ export default defineComponent({
      *
      * @returns String
      */
-    const dateFormatter = (dateObj, withWeekDay) => {
+    const dateFormatter = (dateObj) => {
       let year = dateObj.getFullYear();
       let month = dateObj.getMonth() + 1;
       if (month < 10) {
         month = "0" + month;
       }
       let date = dateObj.getDate();
-      if (withWeekDay) {
-        let day = dateObj.getDay();
-        let dayText = state.settingData.weekdayText[day];
-        return year + "/" + month + "/" + date + "(" + dayText + ")";
-      }
       return year + "/" + month + "/" + date;
     };
     /**
@@ -699,13 +673,9 @@ export default defineComponent({
        return count
     }
 
-    const getMonthsCount = (n) => {
-      return moment(addMonths(state.settingData.startDate, n)).daysInMonth()
-    }
+    const getMonthsCount = (n) =>  moment(addMonths(state.settingData.startDate, n)).daysInMonth()
 
-    const getDateWidth = (n) => {
-      return state.settingData.unitDivW * getMonthsCount(n) + getMonthsCount(n) - state.settingData.borderW
-    }
+    const getDateWidth = (n) => state.settingData.unitDivW * getMonthsCount(n) + getMonthsCount(n) - state.settingData.borderW
 
     const getContentWidth = (dateCount) => {
       let contentWidth = 0;
@@ -718,7 +688,7 @@ export default defineComponent({
     }
 
     state.settingData = Object.assign(state.settingData, props.setting);
-    state.dateCnt = 2
+    state.dateCnt = 6
         // getDateDiff(
         //     new Date(state.settingData.startDate),
         //     new Date(state.settingData.endDate)
@@ -750,8 +720,6 @@ export default defineComponent({
       setDragenterRowAndIndex,
       disableDragendAnimation,
       getHeaderDate,
-      getHeaderTime,
-      getDateDiff,
       dateFormatter,
       datetimeFormatter,
       addDays,
