@@ -28,6 +28,7 @@
 
 <script>
 import { defineComponent, reactive, watch } from "vue";
+import moment from "moment";
 
 export default defineComponent({
   name: "reserved-div",
@@ -68,34 +69,23 @@ export default defineComponent({
       isMove: false,
     });
 
-    /**
-     * Set the Block left pixel
-     *
-     * @returns void
-     */
+
     const setLeftPosition = () => {
-      let leftDiff = getMinutesDiff(
-          new Date(props.minDate),
-          new Date(props.startText)
-      );
-      let shiftCnt = parseInt(leftDiff / props.unit);
-      state.startLineNo = shiftCnt;
-      let shiftLeft = props.unitWidth * shiftCnt + shiftCnt * props.borderWidth;
+      const a = moment(props.minDate);
+      const b = moment(props.startText);
+
+      const leftDiff = b.diff(a, 'days')
+      state.startLineNo = leftDiff;
+      let shiftLeft = props.unitWidth * leftDiff + leftDiff * props.borderWidth;
       state.styleObject.left = shiftLeft + "px";
     };
-    /**
-     * Set the Block width pixel
-     *
-     * @returns void
-     */
+
     const setWidth = () => {
-      let rightDiff = getMinutesDiff(
-          new Date(props.startText),
-          new Date(props.endText)
-      );
-      let widthCnt = parseInt(rightDiff / props.unit);
-      state.endLineNo = state.startLineNo + widthCnt;
-      let width = props.unitWidth * widthCnt + widthCnt * props.borderWidth;
+      const a = moment(props.startText);
+      const b = moment(props.endText);
+      const rightDiff = b.diff(a, 'days')
+      state.endLineNo = state.startLineNo + rightDiff;
+      let width = props.unitWidth * rightDiff + rightDiff * props.borderWidth;
       state.styleObject.width = width + "px";
     };
     /**
@@ -114,13 +104,7 @@ export default defineComponent({
       state.mouseXStarted = e.clientX;
       state.styleObject.Opacity = 0.5;
     };
-    /**
-     * Adjust time event
-     *
-     * @param Obejct e Event
-     *
-     * @returns void
-     */
+
     const editting = (e) => {
       if (props.isSelecting) {
         e.preventDefault();
@@ -164,11 +148,7 @@ export default defineComponent({
       state.styleObject.Opacity = 1;
       state.mouseXStarted = null;
     };
-    /**
-     * Set the block to move status
-     *
-     * @param Object e
-     */
+
     const moveStart = (e) => {
       if (props.isSelecting) {
         e.preventDefault();
@@ -181,20 +161,14 @@ export default defineComponent({
         emit("set-dragenter-row-and-index", props.rowIndex, null);
       }
     };
-    /**
-     * End move and set new data
-     *
-     * @returns void
-     */
+
     const moveEnd = (e) => {
       let mouseXEnd = e.clientX;
-      // Check move status and move block
       if (
           state.isMove &&
           (mouseXEnd != state.mouseXStarted ||
               props.dragenterRowIndex != props.rowIndex)
       ) {
-        // get x-axis moved count
         let moveXPx = mouseXEnd - state.mouseXStarted;
         let unitCnt = parseInt(moveXPx / props.unitWidth);
         let halfWidth = parseInt(props.unitWidth / 2);
@@ -205,25 +179,19 @@ export default defineComponent({
         state.mouseXStarted = null;
 
         if (unitCnt != 0 || props.dragenterRowIndex != props.rowIndex) {
-          // result pass to father component's method
           emit("move-schedule-data", props.rowIndex, props.keyNo, unitCnt);
         }
       }
 
-      // Return block all status and opacity
       state.isEdit = false;
       state.isMove = false;
       state.styleObject.Opacity = 1;
     };
-    /**
-     * Delete this event
-     */
+
     const deleteEvent = () => {
       emit("delete-schedule-data", props.rowIndex, props.keyNo);
     };
-    /**
-     * Mouse move event for Add new schedule
-     */
+
     const mousemove = (e) => {
       if (
           props.rowIndex == props.isSelectingRowIndex &&
@@ -243,9 +211,7 @@ export default defineComponent({
         }
       }
     };
-    /**
-     * Mouse up event for Add new schedule
-     */
+
     const mouseup = () => {
       emit("mouse-up", props.startText, props.endText);
     };
@@ -285,6 +251,7 @@ export default defineComponent({
               let diff = getMinutesDiff(new Date(oldVal), new Date(newVal));
               let cnt = parseInt(diff / props.unit);
               state.mouseXStarted += props.unitWidth * cnt;
+              console.log('entered to watch endText', diff, cnt, state.mouseXStarted)
             }
           }
         }
@@ -312,12 +279,6 @@ export default defineComponent({
         }
     );
 
-    // if (
-    //     new Date(props.startText) - new Date(props.minDate) < 0 &&
-    //     new Date(props.endText) - new Date(props.minDate) < 0
-    // ) {
-    //   return;
-    // }
     setLeftPosition();
     setWidth();
     state.isShow = true;

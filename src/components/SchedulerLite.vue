@@ -1,7 +1,6 @@
 <template>
   <div class="schedule" @dragover="disableDragendAnimation">
     <div>
-
       <div
           class="sc-rows"
           :style="{
@@ -73,7 +72,6 @@
                 :style="{ height: state.settingData.rowH + 'px' }"
                 @dragenter="setDragenterRow(index)"
             >
-
               <unit-div
                   v-for="n in state.unitCnt"
                   :key="'unit' + n"
@@ -278,17 +276,7 @@ export default defineComponent({
       }
       return result;
     };
-    /**
-     * Check this range has other event
-     *
-     * @param Int    index         Data index
-     * @param Int    oldRowIndex   Old row index
-     * @param Int    newRowIndex   New row index
-     * @param String startDateText StartDate text
-     * @param String endDateText   EndDate text
-     *
-     * @returns Boolean
-     */
+
     const hasOtherEvent = (
         index,
         oldRowIndex,
@@ -325,30 +313,34 @@ export default defineComponent({
       }
       return false;
     };
-    /**
-     * The column are click start event
-     *
-     * @param Object e Event
-     *
-     * @returns void
-     */
+
     const selectStartTime = (rowIndex, keyIndex) => {
       state.isSelecting = true;
       state.isSelectingRowIndex = rowIndex;
-      let addMinutes1 = (keyIndex - 1) * state.settingData.unit;
-      let addMinutes2 = keyIndex * state.settingData.unit;
-      let newStartDateObj = addMinutes(
-          new Date(state.settingData.startDate),
-          addMinutes1
-      );
-      let newEndDateObj = addMinutes(
-          new Date(state.settingData.startDate),
-          addMinutes2
-      );
+
+      let month = 1
+      let dayOfMonth = keyIndex
+
+      for(let i = 0; i < state.dateCnt; i++){
+        const daysInMonth = getMonthsCount(i);
+        const theNextMonthDays = getMonthsCount(i + 1);
+
+        if(dayOfMonth - theNextMonthDays < 0){
+          break;
+        }
+
+        dayOfMonth = dayOfMonth - daysInMonth
+        month++
+      }
+
+
+      const startDate = moment(state.settingData.startDate).add(month - 1, 'month').set('date', dayOfMonth)
+      const endDate = moment(startDate).add(1, 'days')
+
       props.scheduleData[rowIndex].schedule.push({
         text: "New",
-        start: datetimeFormatter(newStartDateObj),
-        end: datetimeFormatter(newEndDateObj),
+        start: datetimeFormatter(startDate.toDate()),
+        end: datetimeFormatter(endDate.toDate()),
       });
       state.isSelectingIndex =
           props.scheduleData[state.isSelectingRowIndex].schedule.length - 1;
@@ -398,15 +390,7 @@ export default defineComponent({
         }
       }
     };
-    /**
-     * Add new block event
-     *
-     * @param Boolean isAdd     Is add event action
-     * @param String  startDate StartDate text
-     * @param String  endDate   EndDate text
-     *
-     * @returns void
-     */
+
     const selectEndTime = (startDate, endDate) => {
       if (state.isSelecting) {
         if (startDate == undefined) {
@@ -440,10 +424,8 @@ export default defineComponent({
         let isBusinessFlag = true;
         let isBusinessChecked = false;
         let changeDatetimeText = (datetimeText) => {
-          let addMinutes1 = unitCnt * state.settingData.unit;
-          let dateObj = new Date(datetimeText);
-          let newDateObj = addMinutes(dateObj, addMinutes1);
-          return datetimeFormatter(newDateObj);
+          const newDateObj = moment(datetimeText).add(unitCnt, 'days')
+           return datetimeFormatter(newDateObj);
         };
         let newStartDatetime = changeDatetimeText(targetData.start);
         let newEndDatetime = changeDatetimeText(targetData.end);
@@ -513,24 +495,15 @@ export default defineComponent({
         emit("move-event", status, targetData.start, targetData.end);
       }
     };
-    /**
-     * Edit Schedule Datetime Text
-     *
-     * @param int rowIndex  Row
-     * @param int keyNo     Key
-     * @param int unitCnt   Moved unit count
-     *
-     * @returns void
-     */
+
     const editScheduleData = (rowIndex, keyNo, unitCnt) => {
       let targetData = props.scheduleData[rowIndex].schedule[keyNo];
       if (targetData) {
         let changeDatetimeText = (datetimeText) => {
-          let addMinutes1 = unitCnt * state.settingData.unit;
-          let dateObj = new Date(datetimeText);
-          let newDateObj = addMinutes(dateObj, addMinutes1);
+          const newDateObj = moment(datetimeText).add(unitCnt, 'days')
           return datetimeFormatter(newDateObj);
         };
+
         let newEndText = changeDatetimeText(targetData.end);
         if (
             hasOtherEvent(keyNo, rowIndex, rowIndex, targetData.start, newEndText)
@@ -540,14 +513,7 @@ export default defineComponent({
         targetData.end = newEndText;
       }
     };
-    /**
-     * Delete Schedule
-     *
-     * @param int rowIndex  Row
-     * @param int keyNo     Key
-     *
-     * @returns void
-     */
+
     const deleteScheduleData = (rowIndex, keyNo) => {
       props.scheduleData[rowIndex].schedule.splice(keyNo, 1);
       emit("delete-event", rowIndex, keyNo);
@@ -590,27 +556,24 @@ export default defineComponent({
     }
 
     state.settingData = Object.assign(state.settingData, props.setting);
+
     state.dateCnt = 6
         // getDateDiff(
         //     new Date(state.settingData.startDate),
         //     new Date(state.settingData.endDate)
         // ) + 1; #TODO Поменять на метод который будет отдавать количество месяцев
-    let oneDayCnt = parseInt(1440 / state.settingData.unit);
-    state.unitCnt = getUnitCounts(state.dateCnt) //oneDayCnt * state.dateCnt;
+    state.unitCnt = getUnitCounts(state.dateCnt)
+
     state.padding =
         state.settingData.dateDivH +
         state.settingData.timeDivH +
         state.settingData.borderW * 4;
-    state.dateDivW =
-        state.settingData.unitDivW * oneDayCnt +
-        (oneDayCnt - state.settingData.borderW);
+
     state.contentH =
         state.padding +
         (state.settingData.rowH + state.settingData.borderW * 2) *
         props.scheduleData.length;
-    state.contentW =
-        state.dateDivW * state.dateCnt +
-        state.dateCnt * state.settingData.borderW;
+
     state.timeDivW =
         (60 / state.settingData.unit) *
         (state.settingData.unitDivW + state.settingData.borderW) -
@@ -646,7 +609,6 @@ export default defineComponent({
 });
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .clear {
   clear: both;
