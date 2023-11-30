@@ -187,92 +187,17 @@ export default defineComponent({
       clearSwitch: false,
     });
 
-    /**
-     * Draggable Enter Event
-     *
-     * @param int rowIndex Row Index
-     *
-     * @returns void
-     */
-    const setDragenterRow = (rowIndex) => {
-      state.dragenterRowIndex = rowIndex;
-    };
-    /**
-     * Draggable Enter Event
-     *
-     * @param int rowIndex     Row Index
-     * @param int currentIndex Current Index
-     *
-     * @returns void
-     */
+    const setDragenterRow = (rowIndex) => state.dragenterRowIndex = rowIndex;
+
     const setDragenterRowAndIndex = (rowIndex, currentIndex) => {
       state.dragenterRowIndex = rowIndex;
       state.dragenterKeyIndex = currentIndex;
     };
-    /**
-     * Disable HTML5 DragEnd animation and Set mouse position
-     *
-     * @param Obejct e Event
-     */
-    const disableDragendAnimation = (e) => {
-      e.preventDefault();
-    };
-    /**
-     * Get header area date-text
-     *
-     * @param Int n Col index
-     *
-     * @returns String
-     */
 
+    const disableDragendAnimation = (e) => e.preventDefault()
 
-
-    const getHeaderDate = (n) => {
-      let startDate = addMonths(new Date(state.settingData.startDate), n);
-      return dateFormatter(startDate);
-    };
-
-    /**
-     * Custom date formatter
-     *
-     * @param Obejct  dateObj     DateObejct
-     * @param Boolean withWeekDay If u need weekday, set True
-     *
-     * @returns String
-     */
-    const dateFormatter = (dateObj) => {
-      let year = dateObj.getFullYear();
-      let month = dateObj.getMonth() + 1;
-      if (month < 10) {
-        month = "0" + month;
-      }
-      let date = dateObj.getDate();
-      return year + "/" + month + "/" + date;
-    };
-    /**
-     * Custom datetime formatter
-     *
-     * @param Obejct  dateObj     DateObejct
-     *
-     * @returns String
-     */
-    const datetimeFormatter = (dateObj) => {
-      let year = dateObj.getFullYear();
-      let month = dateObj.getMonth() + 1;
-      if (month < 10) {
-        month = "0" + month;
-      }
-      let date = dateObj.getDate();
-      let hours = dateObj.getHours();
-      if (hours < 10) {
-        hours = "0" + hours;
-      }
-      let minutes = dateObj.getMinutes();
-      if (minutes < 10) {
-        minutes = "0" + minutes;
-      }
-      return year + "/" + month + "/" + date + " " + hours + ":" + minutes;
-    };
+    const getHeaderDate = (n) => moment(addMonths(new Date(state.settingData.startDate), n)).format('YYYY-MM-DD')
+    const datetimeFormatter = (dateObj) => moment(dateObj).format('YYYY/MM/DD HH:mm')
     /**
      * Add days to object
      *
@@ -281,42 +206,19 @@ export default defineComponent({
      *
      * @returns Object
      */
-    const addDays = (dateObj, n) => {
-      dateObj.setTime(dateObj.getTime() + n * 60 * 60 * 24 * 1000);
-      return dateObj;
-    };
+    const addDays = (dateObj, n) => moment(dateObj).add(n, 'days').toDate()
 
-    const addMonths =(dateObj, n) => {
-      const date =  moment(dateObj).add(n, 'months')
-      return date.toDate()
-    }
-    /**
-     * Add minutes to date object
-     *
-     * @param Obejct dateObj DateObject
-     * @param Int    n       Add number
-     *
-     * @returns Object
-     */
-    const addMinutes = (dateObj, n) => {
-      dateObj.setTime(dateObj.getTime() + n * 60 * 1000);
-      return dateObj;
-    };
-    /**
-     * Check this div is business or not
-     *
-     * @param Int rowIndex Row index
-     * @param Int n        Col index
-     *
-     * @returns Boolean
-     */
+    const addMonths =(dateObj, n) => moment(dateObj).add(n, 'months').toDate()
+
+    const addMinutes = (dateObj, n) => moment(dateObj).add(n, 'minutes').toDate()
+
     const isBusiness = (rowIndex, n) => {
       // first check this div business day
       let startDate = new Date(state.settingData.startDate);
       let oneDayCnt = parseInt(1440 / state.settingData.unit);
       let thisDate = addDays(startDate, parseInt(n / oneDayCnt));
       let noBusinessDate = props.scheduleData[rowIndex].noBusinessDate;
-      if (noBusinessDate.indexOf(dateFormatter(thisDate)) >= 0) {
+      if (noBusinessDate.indexOf(moment(thisDate).format('YYYY-MM-DD')) >= 0) {
         // today not business day
         return false;
       }
@@ -720,7 +622,6 @@ export default defineComponent({
       setDragenterRowAndIndex,
       disableDragendAnimation,
       getHeaderDate,
-      dateFormatter,
       datetimeFormatter,
       addDays,
       addMinutes,
