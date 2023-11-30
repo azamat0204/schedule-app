@@ -63,24 +63,7 @@ const sampleData = [
         end: "24:00",
       },
     ],
-    schedule: [
-      {
-        text: "Mr.A reserved",
-        start: "2020/04/21 06:00",
-        end: "2020/04/22 01:00",
-        data: {
-          something: "something",
-        },
-      },
-      {
-        text: "Mr.B reserved",
-        start: "2020/04/22 06:00",
-        end: "2020/04/22 12:00",
-        data: {
-          something: "something",
-        },
-      },
-    ],
+    schedule: [],
   },
   {
     title: "Room２",
@@ -115,16 +98,7 @@ const sampleData = [
         end: "17:00",
       },
     ],
-    schedule: [
-      {
-        text: "Mr.C reserved",
-        start: "2020/04/20 12:00",
-        end: "2020/04/20 17:00",
-        data: {
-          something: "something",
-        },
-      },
-    ],
+    schedule: [],
   },
   {
     title: "Room３",
@@ -162,8 +136,8 @@ const sampleData = [
     schedule: [
       {
         text: "Mr.D reserved",
-        start: "2020/04/20 12:00",
-        end: "2020/04/20 18:00",
+        start: "2023/01/01",
+        end: "2023/01/05",
         data: {
           something: "something",
         },
@@ -179,7 +153,7 @@ const sampleSetting = {
   borderW: 1, // Px
   dateDivH: 25, // Высота дней (месяцев в будущем)
   timeDivH: 25, // Высота времени (дней в будушем)
-  unitDivW: 50, // Ширина отдельной ячейки в таблице
+  unitDivW: 40, // Ширина отдельной ячейки в таблице
   titleDivW: 20, //  Длина навзвании комнат в процентах
   rowH: 50, //  Высота столбцов в px
 };
