@@ -206,15 +206,7 @@ export default defineComponent({
       const thisDate = getDateByIndex(n + 1)
       return noBusinessDate.indexOf(thisDate.format('YYYY-MM-DD')) < 0;
     };
-    /**
-     * Check this range is business or not
-     *
-     * @param Int    rowIndex      Row index
-     * @param String startDateText StartDate text
-     * @param String endDateText   EndDate text
-     *
-     * @returns Boolean
-     */
+
     const isBusinessOnRange = (rowIndex, startDateText, endDateText) => {
       const settingsStartDate = moment(state.settingData.startDate)
       const startDateCount = moment(startDateText).diff(settingsStartDate, 'days')
@@ -300,11 +292,7 @@ export default defineComponent({
       state.isSelectingIndex =
           props.scheduleData[state.isSelectingRowIndex].schedule.length - 1;
     };
-    /**
-     * New event adjust event
-     *
-     * @param int keyIndex
-     */
+
     const adjustTimeRange = (keyIndex) => {
       let targetIndex =
           props.scheduleData[state.isSelectingRowIndex].schedule.length - 1;
@@ -317,7 +305,7 @@ export default defineComponent({
         let newEndDateText
 
         if(keyIndex > diff){
-          newEndDateText = moment(targetData.start).add(keyIndex - diff, 'days').format('YYYY-MM-DD')
+          newEndDateText = moment(targetData.start).add(keyIndex - diff, 'days').format('YYYY/MM/DD HH:mm')
         }else{
           newEndDateText =  moment(targetData.start)
         }
@@ -337,7 +325,6 @@ export default defineComponent({
           isPermission = false;
         }
 
-        // Check Businessday
         if (isPermission) {
           isPermission = isBusinessOnRange(
               state.isSelectingRowIndex,

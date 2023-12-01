@@ -248,6 +248,7 @@ export default defineComponent({
                 props.rowIndex == props.isSelectingRowIndex &&
                 props.keyNo == props.isSelectingIndex
             ) {
+              console.log('called end text')
               let diff = getMinutesDiff(new Date(oldVal), new Date(newVal));
               let cnt = parseInt(diff / props.unit);
               state.mouseXStarted += props.unitWidth * cnt;
