@@ -32,12 +32,12 @@ import schedulerLite from "./components/SchedulerLite.vue";
 const sampleData = [
   {
     title: "Room１",
-    noBusinessDate: ["2023/01/05", '2023-01-06'],
+    noBusinessDate: ["2023-01-05", '2023-01-06'],
     schedule: [],
   },
   {
     title: "Room２",
-    noBusinessDate: ["2023/01/03"],
+    noBusinessDate: ["2023-01-03"],
     schedule: [],
   },
   {
@@ -46,8 +46,8 @@ const sampleData = [
     schedule: [
       {
         text: "Mr.D reserved",
-        start: "2023/01/01",
-        end: "2023/01/05",
+        start: "2023-01-01",
+        end: "2023-01-05",
         data: {
           something: "something",
         },
@@ -57,8 +57,8 @@ const sampleData = [
 ];
 
 const sampleSetting = {
-  startDate: "2023/01/01",
-  endDate: "2023/02/30",
+  startDate: "2023-01-01",
+  endDate: "2023-02-30",
   unit: 60, // Minutes
   borderW: 1, // Px
   dateDivH: 25, // Высота дней (месяцев в будущем)
@@ -140,36 +140,7 @@ export default {
       this.scData.push({
         title: newTitle,
         noBusinessDate: [],
-        businessHours: [
-          {
-            start: "00:00",
-            end: "24:00",
-          },
-          {
-            start: "00:00",
-            end: "24:00",
-          },
-          {
-            start: "00:00",
-            end: "24:00",
-          },
-          {
-            start: "00:00",
-            end: "24:00",
-          },
-          {
-            start: "00:00",
-            end: "24:00",
-          },
-          {
-            start: "00:00",
-            end: "24:00",
-          },
-          {
-            start: "00:00",
-            end: "24:00",
-          },
-        ],
+        businessHours: [],
         schedule: [],
       });
     },

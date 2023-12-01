@@ -312,7 +312,6 @@ export default defineComponent({
 
         let isPermission = true;
 
-        // Check other event
         if (
             hasOtherEvent(
                 targetIndex,
@@ -340,7 +339,7 @@ export default defineComponent({
 
     const selectEndTime = (startDate, endDate) => {
       if (state.isSelecting) {
-        if (startDate == undefined) {
+        if (startDate === undefined) {
           let targetData =
               props.scheduleData[state.isSelectingRowIndex].schedule[
               props.scheduleData[state.isSelectingRowIndex].schedule.length - 1
@@ -355,15 +354,7 @@ export default defineComponent({
       state.isSelectingIndex = null;
       state.clearSwitch = !state.clearSwitch;
     };
-    /**
-     * Edit Schedule Datetime Text
-     *
-     * @param int rowIndex     Row Index
-     * @param int keyNo        Key
-     * @param int unitCnt      Moved unit count
-     *
-     * @returns void
-     */
+
     const moveScheduleData = (rowIndex, keyNo, unitCnt) => {
       let targetData = props.scheduleData[rowIndex].schedule[keyNo];
       if (targetData) {
@@ -377,7 +368,7 @@ export default defineComponent({
         let newStartDatetime = changeDatetimeText(targetData.start);
         let newEndDatetime = changeDatetimeText(targetData.end);
 
-        if (unitCnt != 0) {
+        if (unitCnt !== 0) {
           if (
               hasOtherEvent(
                   keyNo,
@@ -403,7 +394,7 @@ export default defineComponent({
           }
         }
         if (
-            rowIndex != state.dragenterRowIndex &&
+            rowIndex !== state.dragenterRowIndex &&
             props.scheduleData[state.dragenterRowIndex]
         ) {
           if (isBusinessChecked && !isBusinessFlag) {
@@ -464,18 +455,6 @@ export default defineComponent({
     const deleteScheduleData = (rowIndex, keyNo) => {
       props.scheduleData[rowIndex].schedule.splice(keyNo, 1);
       emit("delete-event", rowIndex, keyNo);
-    };
-    /**
-     * Get minutes diff between date1 and date2
-     *
-     * @param Object date1 DateObject1
-     * @param Object date2 DateObject2
-     *
-     * @returns Int
-     */
-    const getMinutesDiff = (date1, date2) => {
-      const diffTime = Math.abs(date2 - date1);
-      return Math.ceil(diffTime / (1000 * 60));
     };
 
     const getUnitCounts = (dateCnt) => {
@@ -543,7 +522,6 @@ export default defineComponent({
       moveScheduleData,
       editScheduleData,
       deleteScheduleData,
-      getMinutesDiff,
       moment,
       addMonths,
       getMonthsCount,

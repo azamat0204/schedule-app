@@ -71,6 +71,7 @@ export default defineComponent({
 
 
     const setLeftPosition = () => {
+      console.log(props.minDate, props.maxDate)
       const a = moment(props.minDate);
       const b = moment(props.startText);
 
@@ -88,13 +89,7 @@ export default defineComponent({
       let width = props.unitWidth * rightDiff + rightDiff * props.borderWidth;
       state.styleObject.width = width + "px";
     };
-    /**
-     * Set the Block to edit status
-     *
-     * @param Object e Event
-     *
-     * @returns void
-     */
+
     const editStart = (e) => {
       if (props.isSelecting) {
         e.preventDefault();
@@ -135,11 +130,7 @@ export default defineComponent({
         }
       }
     };
-    /**
-     * End edit and set new data
-     *
-     * @returns void
-     */
+
     const editEnd = () => {
       if (state.isEdit) {
         emit("edit-event", props.startText, props.endText);
@@ -166,8 +157,8 @@ export default defineComponent({
       let mouseXEnd = e.clientX;
       if (
           state.isMove &&
-          (mouseXEnd != state.mouseXStarted ||
-              props.dragenterRowIndex != props.rowIndex)
+          (mouseXEnd !== state.mouseXStarted ||
+              props.dragenterRowIndex !== props.rowIndex)
       ) {
         let moveXPx = mouseXEnd - state.mouseXStarted;
         let unitCnt = parseInt(moveXPx / props.unitWidth);
@@ -178,7 +169,7 @@ export default defineComponent({
         }
         state.mouseXStarted = null;
 
-        if (unitCnt != 0 || props.dragenterRowIndex != props.rowIndex) {
+        if (unitCnt !== 0 || props.dragenterRowIndex !== props.rowIndex) {
           emit("move-schedule-data", props.rowIndex, props.keyNo, unitCnt);
         }
       }
@@ -194,13 +185,13 @@ export default defineComponent({
 
     const mousemove = (e) => {
       if (
-          props.rowIndex == props.isSelectingRowIndex &&
-          props.keyNo == props.isSelectingIndex
+          props.rowIndex === props.isSelectingRowIndex &&
+          props.keyNo === props.isSelectingIndex
       ) {
         if (props.isSelecting && state.mouseXStarted) {
           let movePx = e.clientX - state.mouseXStarted;
           let unitCnt = parseInt(movePx / props.unitWidth);
-          if (unitCnt != 0 && unitCnt < 0) {
+          if (unitCnt !== 0 && unitCnt < 0) {
             state.mouseXStarted = e.clientX + props.unitWidth;
             emit("edit-schedule-data", props.rowIndex, props.keyNo, unitCnt);
           }
@@ -215,23 +206,11 @@ export default defineComponent({
     const mouseup = () => {
       emit("mouse-up", props.startText, props.endText);
     };
-    /**
-     * Get minutes diff between date1 and date2
-     *
-     * @param Object date1 DateObject1
-     * @param Object date2 DateObject2
-     *
-     * @returns Int
-     */
-    const getMinutesDiff = (date1, date2) => {
-      const diffTime = date2 - date1;
-      return Math.ceil(diffTime / (1000 * 60));
-    };
 
     watch(
         () => props.startText,
         (newVal, oldVal) => {
-          if (newVal != oldVal) {
+          if (newVal !== oldVal) {
             setLeftPosition();
           }
         }
@@ -240,7 +219,7 @@ export default defineComponent({
     watch(
         () => props.endText,
         (newVal, oldVal) => {
-          if (newVal != oldVal) {
+          if (newVal !== oldVal) {
             setWidth();
           }
         }
@@ -250,8 +229,8 @@ export default defineComponent({
         () => props.dragenterKeyIndex,
         (newVal, oldVal) => {
           if (
-              newVal != oldVal &&
-              props.dragenterRowIndex == props.rowIndex &&
+              newVal !== oldVal &&
+              props.dragenterRowIndex === props.rowIndex &&
               state.isEdit
           ) {
             editting();
@@ -262,7 +241,7 @@ export default defineComponent({
     watch(
         () => props.clearSwitch,
         (newVal, oldVal) => {
-          if (newVal != oldVal) {
+          if (newVal !== oldVal) {
             editEnd();
           }
         }
@@ -284,7 +263,6 @@ export default defineComponent({
       deleteEvent,
       mousemove,
       mouseup,
-      getMinutesDiff,
     };
   },
 });
