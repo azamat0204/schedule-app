@@ -251,7 +251,6 @@ export default defineComponent({
               let diff = getMinutesDiff(new Date(oldVal), new Date(newVal));
               let cnt = parseInt(diff / props.unit);
               state.mouseXStarted += props.unitWidth * cnt;
-              console.log('entered to watch endText', diff, cnt, state.mouseXStarted)
             }
           }
         }

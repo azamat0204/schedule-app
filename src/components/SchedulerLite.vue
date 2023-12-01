@@ -196,57 +196,15 @@ export default defineComponent({
 
     const getHeaderDate = (n) => moment(addMonths(new Date(state.settingData.startDate), n)).format('DD-MM-YYYY')
     const datetimeFormatter = (dateObj) => moment(dateObj).format('YYYY/MM/DD HH:mm')
-    /**
-     * Add days to object
-     *
-     * @param Obejct dateObj DateObject
-     * @param Int    n       Add number
-     *
-     * @returns Object
-     */
-    const addDays = (dateObj, n) => moment(dateObj).add(n, 'days').toDate()
 
     const addMonths =(dateObj, n) => moment(dateObj).add(n, 'months').toDate()
 
     const addMinutes = (dateObj, n) => moment(dateObj).add(n, 'minutes').toDate()
 
     const isBusiness = (rowIndex, n) => {
-      // first check this div business day
-      let startDate = new Date(state.settingData.startDate);
-      let oneDayCnt = parseInt(1440 / state.settingData.unit);
-      let thisDate = addDays(startDate, parseInt(n / oneDayCnt));
-      let noBusinessDate = props.scheduleData[rowIndex].noBusinessDate;
-      if (noBusinessDate.indexOf(moment(thisDate).format('YYYY-MM-DD')) >= 0) {
-        // today not business day
-        return false;
-      }
-
-      // and check this div time bussiness hour
-      let weekDay = thisDate.getDay();
-      let businessHour = props.scheduleData[rowIndex].businessHours[weekDay];
-      if (businessHour.start == "00:00" && businessHour.end == "24:00") {
-        // alltime
-        return true;
-      }
-
-      // has bussiness hour
-      let businessStartTime = businessHour.start.replace(":", "");
-      let businessEndTime = businessHour.end.replace(":", "");
-      let dateMod = n % oneDayCnt;
-      let divStartCnt = dateMod * state.settingData.unit;
-      let divStartHour = parseInt(divStartCnt / 60);
-      if (divStartHour < 10) {
-        divStartHour = "0" + divStartHour;
-      }
-      let divStartMin = parseInt(divStartCnt % 60);
-      if (divStartMin < 10) {
-        divStartMin = "0" + divStartMin;
-      }
-      let divStartTime = divStartHour + "" + divStartMin;
-      if (divStartTime >= businessStartTime && divStartTime < businessEndTime) {
-        return true;
-      }
-      return false;
+      let noBusinessDate = props.scheduleData[rowIndex].noBusinessDate.map((businessDate) => moment(businessDate).format('YYYY-MM-DD'))
+      const thisDate = getDateByIndex(n + 1)
+      return noBusinessDate.indexOf(thisDate.format('YYYY-MM-DD')) < 0;
     };
     /**
      * Check this range is business or not
@@ -258,18 +216,12 @@ export default defineComponent({
      * @returns Boolean
      */
     const isBusinessOnRange = (rowIndex, startDateText, endDateText) => {
-      let startDiff = getMinutesDiff(
-          new Date(state.settingData.startDate),
-          new Date(startDateText)
-      );
-      let startCnt = parseInt(startDiff / state.settingData.unit);
-      let endDiff = getMinutesDiff(
-          new Date(state.settingData.startDate),
-          new Date(endDateText)
-      );
-      let endCnt = parseInt(endDiff / state.settingData.unit);
+      const settingsStartDate = moment(state.settingData.startDate)
+      const startDateCount = moment(startDateText).diff(settingsStartDate, 'days')
+      const endDateCount = moment(endDateText).diff(settingsStartDate, 'days')
+
       let result = true;
-      for (var i = startCnt; i < endCnt; i++) {
+      for (let i = startDateCount; i < endDateCount; i++) {
         if (!isBusiness(rowIndex, i)) {
           result = false;
         }
@@ -314,10 +266,7 @@ export default defineComponent({
       return false;
     };
 
-    const selectStartTime = (rowIndex, keyIndex) => {
-      state.isSelecting = true;
-      state.isSelectingRowIndex = rowIndex;
-
+    const getDateByIndex = (keyIndex) => {
       let month = 1
       let dayOfMonth = keyIndex
 
@@ -333,8 +282,14 @@ export default defineComponent({
         month++
       }
 
+      return moment(state.settingData.startDate).add(month - 1, 'month').set('date', dayOfMonth)
+    }
 
-      const startDate = moment(state.settingData.startDate).add(month - 1, 'month').set('date', dayOfMonth)
+    const selectStartTime = (rowIndex, keyIndex) => {
+      state.isSelecting = true;
+      state.isSelectingRowIndex = rowIndex;
+
+      const startDate = getDateByIndex(keyIndex)
       const endDate = moment(startDate).add(1, 'days')
 
       props.scheduleData[rowIndex].schedule.push({
@@ -355,13 +310,18 @@ export default defineComponent({
           props.scheduleData[state.isSelectingRowIndex].schedule.length - 1;
       let targetData =
           props.scheduleData[state.isSelectingRowIndex].schedule[targetIndex];
+
+
       if (targetData) {
-        let addMinutes1 = keyIndex * state.settingData.unit;
-        let newEndDateObj = addMinutes(
-            new Date(state.settingData.startDate),
-            addMinutes1
-        );
-        let newEndDateText = datetimeFormatter(newEndDateObj);
+        const diff = moment(targetData.start).diff(moment(state.settingData.startDate), 'days') + 1
+        let newEndDateText
+
+        if(keyIndex > diff){
+          newEndDateText = moment(targetData.start).add(keyIndex - diff, 'days').format('YYYY-MM-DD')
+        }else{
+          newEndDateText =  moment(targetData.start)
+        }
+
         let isPermission = true;
 
         // Check other event
@@ -557,7 +517,7 @@ export default defineComponent({
 
     state.settingData = Object.assign(state.settingData, props.setting);
 
-    state.dateCnt = 6
+    state.dateCnt = 2
         // getDateDiff(
         //     new Date(state.settingData.startDate),
         //     new Date(state.settingData.endDate)
@@ -586,7 +546,6 @@ export default defineComponent({
       disableDragendAnimation,
       getHeaderDate,
       datetimeFormatter,
-      addDays,
       addMinutes,
       isBusiness,
       isBusinessOnRange,

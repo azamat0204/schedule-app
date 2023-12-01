@@ -32,107 +32,17 @@ import schedulerLite from "./components/SchedulerLite.vue";
 const sampleData = [
   {
     title: "Room１",
-    noBusinessDate: ["2020/04/20"],
-    businessHours: [
-      {
-        start: "00:00",
-        end: "24:00",
-      },
-      {
-        start: "00:00",
-        end: "24:00",
-      },
-      {
-        start: "00:00",
-        end: "24:00",
-      },
-      {
-        start: "00:00",
-        end: "24:00",
-      },
-      {
-        start: "00:00",
-        end: "24:00",
-      },
-      {
-        start: "00:00",
-        end: "24:00",
-      },
-      {
-        start: "00:00",
-        end: "24:00",
-      },
-    ],
+    noBusinessDate: ["2023/01/05", '2023-01-06'],
     schedule: [],
   },
   {
     title: "Room２",
-    noBusinessDate: [],
-    businessHours: [
-      {
-        start: "10:00",
-        end: "17:00",
-      },
-      {
-        start: "10:00",
-        end: "17:00",
-      },
-      {
-        start: "10:00",
-        end: "17:00",
-      },
-      {
-        start: "10:00",
-        end: "17:00",
-      },
-      {
-        start: "10:00",
-        end: "17:00",
-      },
-      {
-        start: "10:00",
-        end: "17:00",
-      },
-      {
-        start: "10:00",
-        end: "17:00",
-      },
-    ],
+    noBusinessDate: ["2023/01/03"],
     schedule: [],
   },
   {
     title: "Room３",
     noBusinessDate: [],
-    businessHours: [
-      {
-        start: "00:00",
-        end: "24:00",
-      },
-      {
-        start: "00:00",
-        end: "24:00",
-      },
-      {
-        start: "00:00",
-        end: "24:00",
-      },
-      {
-        start: "00:00",
-        end: "24:00",
-      },
-      {
-        start: "00:00",
-        end: "24:00",
-      },
-      {
-        start: "00:00",
-        end: "24:00",
-      },
-      {
-        start: "00:00",
-        end: "24:00",
-      },
-    ],
     schedule: [
       {
         text: "Mr.D reserved",
