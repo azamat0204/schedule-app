@@ -116,7 +116,7 @@ export default defineComponent({
           let movePx = e.clientX - state.mouseXStarted;
           let unitCnt = parseInt(movePx / props.unitWidth);
 
-          if (unitCnt != 0) {
+          if (unitCnt !== 0) {
             state.mouseXStarted = e.clientX;
             emit("edit-schedule-data", props.rowIndex, props.keyNo, unitCnt);
           }
