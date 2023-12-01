@@ -195,7 +195,7 @@ export default defineComponent({
     const disableDragendAnimation = (e) => e.preventDefault()
 
     const getHeaderDate = (n) => moment(addMonths(new Date(state.settingData.startDate), n)).format('DD-MM-YYYY')
-    const datetimeFormatter = (dateObj) => moment(dateObj).format('YYYY/MM/DD HH:mm')
+    const datetimeFormatter = (dateObj) => moment(dateObj).format('YYYY/MM/DD')
 
     const addMonths =(dateObj, n) => moment(dateObj).add(n, 'months').toDate()
 
@@ -305,7 +305,7 @@ export default defineComponent({
         let newEndDateText
 
         if(keyIndex > diff){
-          newEndDateText = moment(targetData.start).add(keyIndex - diff, 'days').format('YYYY/MM/DD HH:mm')
+          newEndDateText = moment(targetData.start).add(keyIndex - diff, 'days').format('YYYY/MM/DD')
         }else{
           newEndDateText =  moment(targetData.start)
         }
@@ -447,7 +447,7 @@ export default defineComponent({
       let targetData = props.scheduleData[rowIndex].schedule[keyNo];
       if (targetData) {
         let changeDatetimeText = (datetimeText) => {
-          const newDateObj = moment(datetimeText).add(unitCnt, 'days')
+          const newDateObj = moment(datetimeText).add(unitCnt - 1, 'days')
           return datetimeFormatter(newDateObj);
         };
 

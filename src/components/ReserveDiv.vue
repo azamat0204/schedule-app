@@ -118,9 +118,9 @@ export default defineComponent({
             return;
           }
 
-          // adjust by Mouse X-axio
           let movePx = e.clientX - state.mouseXStarted;
           let unitCnt = parseInt(movePx / props.unitWidth);
+
           if (unitCnt != 0) {
             state.mouseXStarted = e.clientX;
             emit("edit-schedule-data", props.rowIndex, props.keyNo, unitCnt);
@@ -242,17 +242,6 @@ export default defineComponent({
         (newVal, oldVal) => {
           if (newVal != oldVal) {
             setWidth();
-            if (
-                props.isSelecting &&
-                state.mouseXStarted &&
-                props.rowIndex == props.isSelectingRowIndex &&
-                props.keyNo == props.isSelectingIndex
-            ) {
-              console.log('called end text')
-              let diff = getMinutesDiff(new Date(oldVal), new Date(newVal));
-              let cnt = parseInt(diff / props.unit);
-              state.mouseXStarted += props.unitWidth * cnt;
-            }
           }
         }
     );
