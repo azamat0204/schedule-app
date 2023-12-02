@@ -13,8 +13,8 @@
   >
     <span style="float: right; padding: 5px" @click="deleteEvent">✖</span
     ><span class="head">
-      <span class="startTime time">{{ startText }}</span
-      >～<span class="endTime time">{{ endText }}</span>
+      <span class="startTime time">{{ formatDisplayDate(startText) }}</span
+      >～<span class="endTime time">{{ formatDisplayDate(endText) }}</span>
     </span>
     <span class="text">{{ contentText }}</span>
     <div
@@ -71,9 +71,8 @@ export default defineComponent({
 
 
     const setLeftPosition = () => {
-      console.log(props.minDate, props.maxDate)
       const a = moment(props.minDate);
-      const b = moment(props.startText);
+      const b = moment(props.startText)
 
       const leftDiff = b.diff(a, 'days')
       state.startLineNo = leftDiff;
@@ -89,6 +88,8 @@ export default defineComponent({
       let width = props.unitWidth * rightDiff + rightDiff * props.borderWidth;
       state.styleObject.width = width + "px";
     };
+
+    const formatDisplayDate = (date) => moment(date).format('DD-MM-YYYY HH:mm')
 
     const editStart = (e) => {
       if (props.isSelecting) {
@@ -217,6 +218,26 @@ export default defineComponent({
     );
 
     watch(
+        () => props.minDate,
+        (newVal, oldVal) => {
+          if (newVal !== oldVal) {
+            setLeftPosition();
+          }
+        }
+    );
+
+    watch(
+        () => props.maxDate,
+        (newVal, oldVal) => {
+          if (newVal !== oldVal) {
+            setLeftPosition();
+          }
+        }
+    );
+
+
+
+    watch(
         () => props.endText,
         (newVal, oldVal) => {
           if (newVal !== oldVal) {
@@ -263,6 +284,7 @@ export default defineComponent({
       deleteEvent,
       mousemove,
       mouseup,
+      formatDisplayDate
     };
   },
 });

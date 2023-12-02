@@ -82,11 +82,11 @@
                   :is-selecting="state.isSelecting"
                   :is-selecting-row-index="state.isSelectingRowIndex"
                   :width="state.settingData.unitDivW + 'px'"
-                  @mouse-down="selectStartTime"
-                  @mouse-enter="adjustTimeRange"
                   @mouse-up="selectEndTime"
                   @set-dragenter-row-and-index="setDragenterRowAndIndex"
               >
+<!--                @mouse-down="selectStartTime"-->
+<!--                @mouse-enter="adjustTimeRange"-->
               </unit-div>
               <reserved-div
                   v-for="(detail, keyNo) in row.schedule"
@@ -138,7 +138,7 @@
 
 <script>
 /* eslint-disable */
-import { defineComponent, reactive } from "vue";
+import { defineComponent, reactive, watch } from "vue";
 import UnitDiv from "./UnitDev.vue";
 import ReservedDiv from "./ReserveDiv.vue";
 import moment from "moment"
@@ -471,6 +471,8 @@ export default defineComponent({
 
     const getDateWidth = (n) => state.settingData.unitDivW * getMonthsCount(n) + getMonthsCount(n) - state.settingData.borderW
 
+    const getDateMonthDiff = (startDate, endDate) =>  moment(endDate).diff(moment(startDate), 'months', false)
+
     const getContentWidth = (dateCount) => {
       let contentWidth = 0;
 
@@ -481,29 +483,33 @@ export default defineComponent({
       return contentWidth
     }
 
-    state.settingData = Object.assign(state.settingData, props.setting);
+    const initStateSettings = () => {
+      state.settingData = Object.assign(state.settingData, props.setting);
 
-    state.dateCnt = 2
-        // getDateDiff(
-        //     new Date(state.settingData.startDate),
-        //     new Date(state.settingData.endDate)
-        // ) + 1; #TODO Поменять на метод который будет отдавать количество месяцев
-    state.unitCnt = getUnitCounts(state.dateCnt)
+      const count = getDateMonthDiff(state.settingData.startDate, state.settingData.endDate)
+      state.dateCnt = isNaN(count) ? 6 : count + 1
+      state.unitCnt = getUnitCounts(state.dateCnt)
 
-    state.padding =
-        state.settingData.dateDivH +
-        state.settingData.timeDivH +
-        state.settingData.borderW * 4;
+      state.padding =
+          state.settingData.dateDivH +
+          state.settingData.timeDivH +
+          state.settingData.borderW * 4;
 
-    state.contentH =
-        state.padding +
-        (state.settingData.rowH + state.settingData.borderW * 2) *
-        props.scheduleData.length;
+      state.contentH =
+          state.padding +
+          (state.settingData.rowH + state.settingData.borderW * 2) *
+          props.scheduleData.length;
 
-    state.timeDivW =
-        (60 / state.settingData.unit) *
-        (state.settingData.unitDivW + state.settingData.borderW) -
-        1;
+      state.timeDivW =
+          (60 / state.settingData.unit) *
+          (state.settingData.unitDivW + state.settingData.borderW) -
+          1;
+    }
+
+    watch(() => props.setting, initStateSettings, {
+      immediate: true,
+      deep: true
+    })
 
     return {
       state,
@@ -580,6 +586,7 @@ export default defineComponent({
 
 .sc-main {
   position: relative;
+  overflow: hidden;
 }
 
 .timeline {
