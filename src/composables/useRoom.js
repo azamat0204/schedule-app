@@ -1,14 +1,14 @@
 import { computed, ref } from 'vue'
 import { ElNotification } from 'element-plus'
 import * as roomApi from '../api/rooms'
+import { useGlobalLoading } from '@/composables/useGlobalLoading'
 
 export const useRoom = () => {
     const sourceData = ref([])
-
-    const sourceDataLoading = ref(false)
+    const { globalSourceDataLoading } = useGlobalLoading()
     const fetchSourceData = async () => {
         try {
-            sourceDataLoading.value = true
+            globalSourceDataLoading.value = true
             const response = await roomApi.getRooms()
             sourceData.value = getMappedRooms(response.result.rooms)
         } catch (e) {
@@ -19,7 +19,7 @@ export const useRoom = () => {
             })
             console.error(e.message)
         } finally {
-            sourceDataLoading.value = false
+            globalSourceDataLoading.value = false
         }
     }
 
@@ -31,6 +31,7 @@ export const useRoom = () => {
                 (bussinessDay) => bussinessDay.date,
             ),
             schedule: room.Schedules.map((schedule) => ({
+                id: schedule.id,
                 text: `ФИО: ${schedule.surname} ${schedule.name} ${schedule.middlename}. Цена: ${schedule.price}тенге`,
                 start: schedule.startDate,
                 end: schedule.endDate,
@@ -47,7 +48,6 @@ export const useRoom = () => {
 
     return {
         fetchSourceData,
-        sourceDataLoading,
         sourceData,
         rooms,
     }

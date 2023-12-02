@@ -1,11 +1,14 @@
 import moment from 'moment'
-import { nextTick, reactive } from 'vue'
+import { nextTick, reactive, ref } from 'vue'
 import { required, helpers } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
 import { ElNotification } from 'element-plus'
 import * as scheduleApi from '../api/schedule'
+import { useGlobalLoading } from '@/composables/useGlobalLoading'
 
 export const useSchedule = () => {
+    const { globalSourceDataLoading } = useGlobalLoading()
+
     const addScheduleInitialState = {
         name: '',
         surname: '',
@@ -20,6 +23,7 @@ export const useSchedule = () => {
     const addScheduleState = reactive({
         ...addScheduleInitialState,
     })
+
     const rules = {
         name: {
             required: helpers.withMessage('Заполните поле', required),
@@ -58,8 +62,10 @@ export const useSchedule = () => {
         })
     }
 
+    const createScheduleLoading = ref(false)
     const createSchedule = async (successCallback) => {
         try {
+            createScheduleLoading.value = true
             const startDate = moment(
                 `${moment(addScheduleState.startDate).format(
                     'YYYY-MM-DD',
@@ -99,11 +105,37 @@ export const useSchedule = () => {
                 type: 'error',
             })
             console.error(e.message)
+        } finally {
+            createScheduleLoading.value = false
+        }
+    }
+
+    const deleteSchedule = async (id, successCallback) => {
+        try {
+            globalSourceDataLoading.value = true
+            await scheduleApi.deleteSchedule(id)
+            successCallback?.()
+            ElNotification({
+                title: 'Успех',
+                message: 'Расписание успешнр удалено!',
+                type: 'success',
+            })
+        } catch (e) {
+            ElNotification({
+                title: 'Ошибка',
+                message: 'Не удалось удалить расписание',
+                type: 'error',
+            })
+            console.error(e.message)
+        } finally {
+            globalSourceDataLoading.value
         }
     }
 
     return {
         createSchedule,
+        deleteSchedule,
+        createScheduleLoading,
         resetAddScheduleState,
         addScheduleState,
         v$,

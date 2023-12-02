@@ -100,7 +100,7 @@
                     </el-button>
                     <el-button
                         type="primary"
-                        :loading="sourceDataLoading"
+                        :loading="createScheduleLoading"
                         @click="createSchedule"
                     >
                         Добавить расписание
@@ -121,7 +121,7 @@
                         @update:model-value="setMonthDate"
                     />
                 </div>
-                <div v-loading="sourceDataLoading" class="content__body">
+                <div v-loading="globalSourceDataLoading" class="content__body">
                     <sc
                         :schedule-data="sourceData"
                         :setting="setting"
@@ -131,7 +131,7 @@
                         @add-event="addEvent"
                         @move-event="moveEvent"
                         @edit-event="editEvent"
-                        @delete-event="deleteEvent"
+                        @delete-event="deleteSchedule"
                     ></sc>
                 </div>
             </div>
@@ -151,9 +151,10 @@
 <script>
 import moment from 'moment'
 import schedulerLite from './components/SchedulerLite.vue'
-import { useSchedule } from '@/composables/useSchedule.ts'
+import { useSchedule } from '@/composables/useSchedule.js'
 import { vMaska } from 'maska'
-import { useRoom } from '@/composables/useRoom.ts'
+import { useRoom } from '@/composables/useRoom.js'
+import { useGlobalLoading } from '@/composables/useGlobalLoading'
 
 export default {
     name: 'App',
@@ -162,23 +163,35 @@ export default {
         sc: schedulerLite,
     },
     setup() {
-        const { fetchSourceData, sourceDataLoading, sourceData, rooms } =
-            useRoom()
+        const { fetchSourceData, sourceData, rooms } = useRoom()
 
-        const { v$, addScheduleState, resetAddScheduleState, createSchedule } =
-            useSchedule()
-
-        const createScheduleWrapper = () => createSchedule(fetchSourceData)
-
-        return {
+        const {
             v$,
-            rooms,
             addScheduleState,
             resetAddScheduleState,
+            createSchedule,
+            createScheduleLoading,
+            deleteSchedule,
+        } = useSchedule()
+
+        const { globalSourceDataLoading } = useGlobalLoading()
+        const createScheduleWrapper = () => createSchedule(fetchSourceData)
+        const deleteScheduleWrapper = (rowIndex, keyNo) => {
+            const id = sourceData.value[rowIndex].schedule[keyNo].id
+            deleteSchedule(id, fetchSourceData)
+        }
+
+        return {
+            rooms,
             fetchSourceData,
-            sourceDataLoading,
-            createSchedule: createScheduleWrapper,
             sourceData,
+            globalSourceDataLoading,
+            addScheduleState,
+            v$,
+            resetAddScheduleState,
+            createScheduleLoading,
+            createSchedule: createScheduleWrapper,
+            deleteSchedule: deleteScheduleWrapper,
         }
     },
     data: function () {

@@ -1,139 +1,174 @@
 <template>
-  <div class="schedule" @dragover="disableDragendAnimation">
-    <div>
-      <div
-          class="sc-rows"
-          :style="{
-          width: state.settingData.titleDivW + '%',
-          height: state.contentH + 'px',
-        }"
-      >
-        <div class="sc-rows-scroll" :style="{ width: '100%' }">
-          <div
-              v-for="(row, index) in scheduleData"
-              :key="index"
-              :class="'timeline title'"
-              :style="{
-              height: state.settingData.rowH + 'px',
-              'padding-top': index == 0 ? state.padding + 'px' : '0px',
-            }"
-              @click="$emit('row-click-event', index, row.title)"
-          >
-            <span style="cursor: pointer">{{ row.title }}</span>
-          </div>
-        </div>
-      </div>
-      <div
-          class="sc-main-box"
-          :style="{ width: 100 - state.settingData.titleDivW + '%' }"
-      >
-        <div class="sc-main-scroll" :style="{ width: getContentWidth(state.dateCnt) + 'px' }">
-          <div class="sc-main">
+    <div class="schedule" @dragover="disableDragendAnimation">
+        <div>
             <div
-                class="timeline"
+                class="sc-rows"
                 :style="{
-                height: state.settingData.dateDivH + 'px',
-                background: 'black',
-              }"
+                    width: state.settingData.titleDivW + '%',
+                    height: state.contentH + 'px',
+                }"
             >
-              <div
-                  v-for="n in state.dateCnt"
-                  :key="n"
-                  class="sc-time"
-                  :style="{ width: getDateWidth(n - 1)  + 'px', cursor: 'pointer' }"
-                  @click="$emit('date-click-event', getHeaderDate(n - 1))"
-              >
-                {{ getHeaderDate(n - 1) }}
-              </div>
-            </div>
-            <div
-                class="timeline"
-                :style="{
-                height: state.settingData.timeDivH + 'px',
-                background: '#6187AE',
-              }"
-            >
-              <template v-for="(n, index) in state.dateCnt" :key="index">
-                <div
-                    v-for="count in getMonthsCount(n - 1)"
-                    :key="count"
-                    class="sc-time"
-                    :style="{ width: state.timeDivW + 'px', height: state.settingData.timeDivH - 8 + 'px'  }"
-                >
-                  {{ count}}
+                <div class="sc-rows-scroll" :style="{ width: '100%' }">
+                    <div
+                        v-for="(row, index) in scheduleData"
+                        :key="index"
+                        :class="'timeline title'"
+                        :style="{
+                            height: state.settingData.rowH + 'px',
+                            'padding-top':
+                                index == 0 ? state.padding + 'px' : '0px',
+                        }"
+                        @click="$emit('row-click-event', index, row.title)"
+                    >
+                        <span style="cursor: pointer">{{ row.title }}</span>
+                    </div>
                 </div>
-              </template>
             </div>
-
             <div
-                v-for="(row, index) in scheduleData"
-                :key="index"
-                :class="'timeline'"
-                :style="{ height: state.settingData.rowH + 'px' }"
-                @dragenter="setDragenterRow(index)"
+                class="sc-main-box"
+                :style="{ width: 100 - state.settingData.titleDivW + '%' }"
             >
-              <unit-div
-                  v-for="n in state.unitCnt"
-                  :key="'unit' + n"
-                  :row-index="index"
-                  :key-index="n"
-                  :row-data="row"
-                  :is-business="isBusiness(index, n - 1)"
-                  :is-selecting="state.isSelecting"
-                  :is-selecting-row-index="state.isSelectingRowIndex"
-                  :width="state.settingData.unitDivW + 'px'"
-                  @mouse-up="selectEndTime"
-                  @set-dragenter-row-and-index="setDragenterRowAndIndex"
-              >
-<!--                @mouse-down="selectStartTime"-->
-<!--                @mouse-enter="adjustTimeRange"-->
-              </unit-div>
-              <reserved-div
-                  v-for="(detail, keyNo) in row.schedule"
-                  :key="'res' + keyNo"
-                  :schedule-detail="detail"
-                  :row-index="index"
-                  :key-no="keyNo"
-                  :start-text="detail.start"
-                  :end-text="detail.end"
-                  :content-text="detail.text"
-                  :unit-width="state.settingData.unitDivW"
-                  :unit-height="state.settingData.rowH"
-                  :title-div-width="state.settingData.titleDivW"
-                  :border-width="state.settingData.borderW"
-                  :min-date="state.settingData.startDate"
-                  :max-date="state.settingData.endDate"
-                  :unit="state.settingData.unit"
-                  :clear-switch="state.clearSwitch"
-                  :dragenter-row-index="state.dragenterRowIndex"
-                  :dragenter-key-index="state.dragenterKeyIndex"
-                  :is-selecting="state.isSelecting"
-                  :is-selecting-row-index="state.isSelectingRowIndex"
-                  :is-selecting-index="state.isSelectingIndex"
-                  @set-dragenter-row-and-index="setDragenterRowAndIndex"
-                  @move-schedule-data="moveScheduleData"
-                  @edit-schedule-data="editScheduleData"
-                  @delete-schedule-data="deleteScheduleData"
-                  @mouse-up="selectEndTime"
-                  @move-event="$emit('move-event')"
-                  @edit-event="$emit('edit-event', detail.start, detail.end)"
-                  @click-event="
-                  $emit(
-                    'click-event',
-                    detail.start,
-                    detail.end,
-                    detail.text,
-                    detail.data
-                  )
-                "
-              ></reserved-div>
+                <div
+                    class="sc-main-scroll"
+                    :style="{ width: getContentWidth(state.dateCnt) + 'px' }"
+                >
+                    <div class="sc-main">
+                        <div
+                            class="timeline"
+                            :style="{
+                                height: state.settingData.dateDivH + 'px',
+                                background: 'black',
+                            }"
+                        >
+                            <div
+                                v-for="n in state.dateCnt"
+                                :key="n"
+                                class="sc-time"
+                                :style="{
+                                    width: getDateWidth(n - 1) + 'px',
+                                    cursor: 'pointer',
+                                }"
+                                @click="
+                                    $emit(
+                                        'date-click-event',
+                                        getHeaderDate(n - 1),
+                                    )
+                                "
+                            >
+                                {{ getHeaderDate(n - 1) }}
+                            </div>
+                        </div>
+                        <div
+                            class="timeline"
+                            :style="{
+                                height: state.settingData.timeDivH + 'px',
+                                background: '#6187AE',
+                            }"
+                        >
+                            <template
+                                v-for="(n, index) in state.dateCnt"
+                                :key="index"
+                            >
+                                <div
+                                    v-for="count in getMonthsCount(n - 1)"
+                                    :key="count"
+                                    class="sc-time"
+                                    :style="{
+                                        width: state.timeDivW + 'px',
+                                        height:
+                                            state.settingData.timeDivH -
+                                            8 +
+                                            'px',
+                                    }"
+                                >
+                                    {{ count }}
+                                </div>
+                            </template>
+                        </div>
+
+                        <div
+                            v-for="(row, index) in scheduleData"
+                            :key="index"
+                            :class="'timeline'"
+                            :style="{ height: state.settingData.rowH + 'px' }"
+                            @dragenter="setDragenterRow(index)"
+                        >
+                            <unit-div
+                                v-for="n in state.unitCnt"
+                                :key="'unit' + n"
+                                :row-index="index"
+                                :key-index="n"
+                                :row-data="row"
+                                :is-business="isBusiness(index, n - 1)"
+                                :is-selecting="state.isSelecting"
+                                :is-selecting-row-index="
+                                    state.isSelectingRowIndex
+                                "
+                                :width="state.settingData.unitDivW + 'px'"
+                                @mouse-up="selectEndTime"
+                                @set-dragenter-row-and-index="
+                                    setDragenterRowAndIndex
+                                "
+                            >
+                                <!--                @mouse-down="selectStartTime"-->
+                                <!--                @mouse-enter="adjustTimeRange"-->
+                            </unit-div>
+                            <reserved-div
+                                v-for="(detail, keyNo) in row.schedule"
+                                :key="'res' + keyNo"
+                                :schedule-detail="detail"
+                                :row-index="index"
+                                :key-no="keyNo"
+                                :start-text="detail.start"
+                                :end-text="detail.end"
+                                :content-text="detail.text"
+                                :unit-width="state.settingData.unitDivW"
+                                :unit-height="state.settingData.rowH"
+                                :title-div-width="state.settingData.titleDivW"
+                                :border-width="state.settingData.borderW"
+                                :min-date="state.settingData.startDate"
+                                :max-date="state.settingData.endDate"
+                                :unit="state.settingData.unit"
+                                :clear-switch="state.clearSwitch"
+                                :dragenter-row-index="state.dragenterRowIndex"
+                                :dragenter-key-index="state.dragenterKeyIndex"
+                                :is-selecting="state.isSelecting"
+                                :is-selecting-row-index="
+                                    state.isSelectingRowIndex
+                                "
+                                :is-selecting-index="state.isSelectingIndex"
+                                @set-dragenter-row-and-index="
+                                    setDragenterRowAndIndex
+                                "
+                                @move-schedule-data="moveScheduleData"
+                                @edit-schedule-data="editScheduleData"
+                                @delete-schedule-data="deleteScheduleData"
+                                @mouse-up="selectEndTime"
+                                @move-event="$emit('move-event')"
+                                @edit-event="
+                                    $emit(
+                                        'edit-event',
+                                        detail.start,
+                                        detail.end,
+                                    )
+                                "
+                                @click-event="
+                                    $emit(
+                                        'click-event',
+                                        detail.start,
+                                        detail.end,
+                                        detail.text,
+                                        detail.data,
+                                    )
+                                "
+                            ></reserved-div>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
+            <br class="clear" />
         </div>
-      </div>
-      <br class="clear" />
     </div>
-  </div>
 </template>
 
 <script>
@@ -453,7 +488,6 @@ export default defineComponent({
     };
 
     const deleteScheduleData = (rowIndex, keyNo) => {
-      props.scheduleData[rowIndex].schedule.splice(keyNo, 1);
       emit("delete-event", rowIndex, keyNo);
     };
 
