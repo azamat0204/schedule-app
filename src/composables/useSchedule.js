@@ -7,7 +7,7 @@ import * as scheduleApi from '../api/schedule'
 import { useGlobalLoading } from '@/composables/useGlobalLoading'
 
 export const useSchedule = () => {
-    const { globalSourceDataLoading } = useGlobalLoading()
+    const { setGlobalLoadingOff, setGlobalLoadingOn } = useGlobalLoading()
 
     const addScheduleInitialState = {
         name: '',
@@ -112,12 +112,12 @@ export const useSchedule = () => {
 
     const deleteSchedule = async (id, successCallback) => {
         try {
-            globalSourceDataLoading.value = true
+            setGlobalLoadingOn()
             await scheduleApi.deleteSchedule(id)
             successCallback?.()
             ElNotification({
                 title: 'Успех',
-                message: 'Расписание успешнр удалено!',
+                message: 'Расписание успешно удалено!',
                 type: 'success',
             })
         } catch (e) {
@@ -128,13 +128,31 @@ export const useSchedule = () => {
             })
             console.error(e.message)
         } finally {
-            globalSourceDataLoading.value
+            setGlobalLoadingOn()
+        }
+    }
+
+    const updateScheduleDate = async (payload, successCallback) => {
+        try {
+            setGlobalLoadingOn()
+            await scheduleApi.updateScheduleDate(payload)
+            successCallback?.()
+        } catch (e) {
+            ElNotification({
+                title: 'Ошибка',
+                message: 'Не удалось изменить расписание',
+                type: 'error',
+            })
+            console.error(e.message)
+        } finally {
+            setGlobalLoadingOff()
         }
     }
 
     return {
         createSchedule,
         deleteSchedule,
+        updateScheduleDate,
         createScheduleLoading,
         resetAddScheduleState,
         addScheduleState,

@@ -101,6 +101,7 @@
                     <el-button
                         type="primary"
                         :loading="createScheduleLoading"
+                        :disabled="v$.$invalid"
                         @click="createSchedule"
                     >
                         Добавить расписание
@@ -121,16 +122,18 @@
                         @update:model-value="setMonthDate"
                     />
                 </div>
-                <div v-loading="globalSourceDataLoading" class="content__body">
+                <div
+                    v-loading="lazyGlobalSourceDataLoading"
+                    class="content__body"
+                >
                     <sc
                         :schedule-data="sourceData"
                         :setting="setting"
                         @row-click-event="rowClickEvent"
-                        @date-click-event="dateClickEvent"
                         @click-event="clickEvent"
                         @add-event="addEvent"
-                        @move-event="moveEvent"
-                        @edit-event="editEvent"
+                        @move-event="updateScheduleWrapper"
+                        @edit-event="updateScheduleWrapper"
                         @delete-event="deleteSchedule"
                     ></sc>
                 </div>
@@ -155,6 +158,7 @@ import { useSchedule } from '@/composables/useSchedule.js'
 import { vMaska } from 'maska'
 import { useRoom } from '@/composables/useRoom.js'
 import { useGlobalLoading } from '@/composables/useGlobalLoading'
+import { ElMessage } from 'element-plus'
 
 export default {
     name: 'App',
@@ -172,24 +176,52 @@ export default {
             createSchedule,
             createScheduleLoading,
             deleteSchedule,
+            updateScheduleDate,
         } = useSchedule()
 
-        const { globalSourceDataLoading } = useGlobalLoading()
+        const { lazyGlobalSourceDataLoading } = useGlobalLoading()
         const createScheduleWrapper = () => createSchedule(fetchSourceData)
         const deleteScheduleWrapper = (rowIndex, keyNo) => {
             const id = sourceData.value[rowIndex].schedule[keyNo].id
             deleteSchedule(id, fetchSourceData)
         }
 
+        const updateScheduleWrapper = (
+            status,
+            startDate,
+            endDate,
+            id,
+            roomId,
+        ) => {
+            if (status === 1) {
+                updateScheduleDate(
+                    { id, roomId, startDate, endDate },
+                    fetchSourceData,
+                )
+            } else if (status === 2) {
+                ElMessage({
+                    type: 'info',
+                    message: 'Нельзя переместить, дата забронирована',
+                })
+            } else {
+                ElMessage({
+                    type: 'info',
+                    message: 'Нельзя переместить, не рабочий день',
+                })
+            }
+        }
+
         return {
             rooms,
             fetchSourceData,
+            updateScheduleWrapper,
             sourceData,
-            globalSourceDataLoading,
+            lazyGlobalSourceDataLoading,
             addScheduleState,
             v$,
             resetAddScheduleState,
             createScheduleLoading,
+            updateScheduleDate,
             createSchedule: createScheduleWrapper,
             deleteSchedule: deleteScheduleWrapper,
         }
@@ -232,11 +264,6 @@ export default {
             this.setting.startDate = currentMonth.format('YYYY-MM-DD')
             this.setting.endDate = todayPlusSixMonth.format('YYYY-MM-DD')
         },
-        dateClickEvent(date) {
-            console.log('------')
-            console.log('DateClickEvent:')
-            console.log('Date:' + date)
-        },
         rowClickEvent(rowIndex, text) {
             console.log('------')
             console.log('RowClickEvent:')
@@ -260,18 +287,6 @@ export default {
             console.log('RowIndex:' + rowIndex)
             console.log('StartDate:' + startDate)
             console.log('EndDate:' + endDate)
-        },
-        moveEvent(status, newStartDate, newEndDate) {
-            console.log('------')
-            console.log('MoveEvent:')
-            if (status == 1) {
-                console.log('NewStartDate:' + newStartDate)
-                console.log('NewEndDate:' + newEndDate)
-            } else if (status == 2) {
-                console.log("Has other event, can't move.")
-            } else {
-                console.log("Not businessDay, can't move.")
-            }
         },
         editEvent(newStartDate, newEndDate) {
             console.log('------')

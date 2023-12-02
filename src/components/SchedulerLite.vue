@@ -16,7 +16,7 @@
                         :style="{
                             height: state.settingData.rowH + 'px',
                             'padding-top':
-                                index == 0 ? state.padding + 'px' : '0px',
+                                index === 0 ? state.padding + 'px' : '0px',
                         }"
                         @click="$emit('row-click-event', index, row.title)"
                     >
@@ -65,10 +65,7 @@
                                 background: '#6187AE',
                             }"
                         >
-                            <template
-                                v-for="(n, index) in state.dateCnt"
-                                :key="index"
-                            >
+                            <template v-for="n in state.dateCnt">
                                 <div
                                     v-for="count in getMonthsCount(n - 1)"
                                     :key="count"
@@ -110,8 +107,6 @@
                                     setDragenterRowAndIndex
                                 "
                             >
-                                <!--                @mouse-down="selectStartTime"-->
-                                <!--                @mouse-enter="adjustTimeRange"-->
                             </unit-div>
                             <reserved-div
                                 v-for="(detail, keyNo) in row.schedule"
@@ -148,8 +143,11 @@
                                 @edit-event="
                                     $emit(
                                         'edit-event',
+                                        1,
                                         detail.start,
                                         detail.end,
+                                        detail.id,
+                                        detail.roomId,
                                     )
                                 "
                                 @click-event="
@@ -465,7 +463,8 @@ export default defineComponent({
             status = 1;
           }
         }
-        emit("move-event", status, targetData.start, targetData.end);
+        const roomId = props.scheduleData?.[state.dragenterRowIndex]?.id || null
+        emit("move-event", status, targetData.start, targetData.end, targetData.id, roomId);
       }
     };
 

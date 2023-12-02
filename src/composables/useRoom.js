@@ -5,10 +5,10 @@ import { useGlobalLoading } from '@/composables/useGlobalLoading'
 
 export const useRoom = () => {
     const sourceData = ref([])
-    const { globalSourceDataLoading } = useGlobalLoading()
+    const { setGlobalLoadingOn, setGlobalLoadingOff } = useGlobalLoading()
     const fetchSourceData = async () => {
         try {
-            globalSourceDataLoading.value = true
+            setGlobalLoadingOn()
             const response = await roomApi.getRooms()
             sourceData.value = getMappedRooms(response.result.rooms)
         } catch (e) {
@@ -19,7 +19,7 @@ export const useRoom = () => {
             })
             console.error(e.message)
         } finally {
-            globalSourceDataLoading.value = false
+            setGlobalLoadingOff()
         }
     }
 
@@ -32,6 +32,7 @@ export const useRoom = () => {
             ),
             schedule: room.Schedules.map((schedule) => ({
                 id: schedule.id,
+                roomId: schedule.roomId,
                 text: `ФИО: ${schedule.surname} ${schedule.name} ${schedule.middlename}. Цена: ${schedule.price}тенге`,
                 start: schedule.startDate,
                 end: schedule.endDate,

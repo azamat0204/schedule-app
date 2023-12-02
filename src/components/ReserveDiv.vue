@@ -23,16 +23,27 @@
             </template>
         </el-popconfirm>
 
-        <span class="head">
-            <span class="startTime time">{{
-                formatDisplayDate(startText)
-            }}</span
-            >～<span class="endTime time">{{
-                formatDisplayDate(endText)
-            }}</span>
-        </span>
+        <el-tooltip
+            placement="top"
+            :content="`${formatDisplayDate(startText)}～${formatDisplayDate(
+                endText,
+            )}`"
+            trigger="click"
+        >
+            <span class="head">
+                <span class="startTime time">{{
+                    formatDisplayDate(startText)
+                }}</span
+                >～<span class="endTime time">{{
+                    formatDisplayDate(endText)
+                }}</span>
+            </span>
+        </el-tooltip>
 
-        <span class="text">{{ contentText }}</span>
+        <el-tooltip placement="bottom" :content="contentText" trigger="click">
+            <span class="text">{{ contentText }}</span>
+        </el-tooltip>
+
         <div
             class="resizable-e"
             :draggable="'true'"

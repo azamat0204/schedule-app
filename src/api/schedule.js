@@ -5,3 +5,6 @@ export const createSchedule = (payload) =>
 
 export const deleteSchedule = (id) =>
     axios.delete(`/schedule/${id}`).then((response) => response.data)
+
+export const updateScheduleDate = (payload) =>
+    axios.put('/schedule', payload).then((response) => response.data)

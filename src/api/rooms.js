@@ -1,3 +1,4 @@
-import axios from "./index"
+import axios from './index'
 
-export const getRooms = () => axios.get('/rooms').then(response => response.data)
+export const getRooms = () =>
+    axios.get('/rooms').then((response) => response.data)
