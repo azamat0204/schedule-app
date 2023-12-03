@@ -273,6 +273,7 @@ export default defineComponent({
             (newVal, oldVal) => {
                 if (newVal !== oldVal) {
                     setLeftPosition()
+                    setWidth()
                 }
             },
         )
@@ -299,6 +300,7 @@ export default defineComponent({
             () => props.endText,
             (newVal, oldVal) => {
                 if (newVal !== oldVal) {
+                    setLeftPosition()
                     setWidth()
                 }
             },

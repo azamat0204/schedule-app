@@ -44,7 +44,7 @@
                     <el-select
                         v-model="v$.room.$model"
                         :class="{ danger: v$.room.$error }"
-                        placeholder="Команата"
+                        placeholder="Комната"
                         clearable
                         @blur="v$.room.$touch"
                     >
@@ -146,18 +146,24 @@
                 <span>Забронировано</span>
             </div>
         </div>
+        <edit-schedule
+            v-model="showEditModal"
+            :rooms="rooms"
+            :reserved-data="edittingReservedData"
+        />
     </div>
 </template>
 
 <script setup>
 import sc from './components/SchedulerLite.vue'
-import { useSchedule } from '@/composables/useSchedule.js'
-import { vMaska } from 'maska'
-import { useRoom } from '@/composables/useRoom.js'
-import { useGlobalLoading } from '@/composables/useGlobalLoading'
+import EditSchedule from '@/components/EditSchedule.vue'
+import { onMounted, ref } from 'vue'
 import { ElMessage } from 'element-plus'
-import { onMounted } from 'vue'
+import { useRoom } from '@/composables/useRoom.js'
+import { useSchedule } from '@/composables/useSchedule.js'
+import { useGlobalLoading } from '@/composables/useGlobalLoading'
 import { useScheduleSetting } from '@/composables/useScheduleSetting'
+import { vMaska } from 'maska'
 
 const { monthDate, setting, setDateToLastHalfYear, setMonthDate } =
     useScheduleSetting()
@@ -166,6 +172,7 @@ const { fetchSourceData, sourceData, rooms } = useRoom()
 
 const {
     v$,
+    addScheduleState,
     resetAddScheduleState,
     createSchedule,
     createScheduleLoading,
@@ -173,11 +180,21 @@ const {
     updateScheduleDate,
 } = useSchedule()
 
+const showEditModal = ref(false)
+const edittingReservedData = ref(null)
+
 const editSchedulePencilClick = (rowIndex, keyNo) => {
     const targetData = sourceData.value[rowIndex].schedule[keyNo]
-    console.log(targetData)
+    console.log('called ', targetData, rowIndex, keyNo, showEditModal.value)
+    edittingReservedData.value = targetData
+    showEditModal.value = true
 }
-const createScheduleWrapper = () => createSchedule(fetchSourceData)
+const createScheduleWrapper = () =>
+    createSchedule(addScheduleState, () => {
+        fetchSourceData()
+        resetAddScheduleState()
+    })
+
 const deleteScheduleWrapper = (rowIndex, keyNo) => {
     const id = sourceData.value[rowIndex].schedule[keyNo].id
     deleteSchedule(id, fetchSourceData)
@@ -207,7 +224,7 @@ onMounted(() => {
 })
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 .sample {
     width: 10px;
     height: 10px;

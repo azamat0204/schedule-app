@@ -184,7 +184,7 @@ import ReservedDiv from "./ReserveDiv.vue";
 import moment from "moment"
 
 export default defineComponent({
-  name: "vue3-scheduler-lite",
+  name: "schedule",
   components: {
     "unit-div": UnitDiv,
     "reserved-div": ReservedDiv,
@@ -234,7 +234,7 @@ export default defineComponent({
 
     const disableDragendAnimation = (e) => e.preventDefault()
 
-    const getHeaderDate = (n) => moment(addMonths(new Date(state.settingData.startDate), n)).format('DD-MM-YYYY')
+    const getHeaderDate = (n) => moment(addMonths(new Date(state.settingData.startDate), n)).locale('ru').format('MMMM YYYY').toUpperCase()
     const datetimeFormatter = (dateObj) => moment(dateObj).format('YYYY/MM/DD')
     const addMonths =(dateObj, n) => moment(dateObj).add(n, 'months').toDate()
 

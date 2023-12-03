@@ -1,10 +1,10 @@
-import moment from 'moment'
 import { nextTick, reactive, ref } from 'vue'
 import { required, helpers } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
 import { ElNotification } from 'element-plus'
 import * as scheduleApi from '../api/schedule'
 import { useGlobalLoading } from '@/composables/useGlobalLoading'
+import { combineDateTime } from '@/helpers/combineDateTime'
 
 export const useSchedule = () => {
     const { setGlobalLoadingOff, setGlobalLoadingOn } = useGlobalLoading()
@@ -63,34 +63,30 @@ export const useSchedule = () => {
     }
 
     const createScheduleLoading = ref(false)
-    const createSchedule = async (successCallback) => {
+    const createSchedule = async (payload, successCallback) => {
         try {
             createScheduleLoading.value = true
-            const startDate = moment(
-                `${moment(addScheduleState.startDate).format(
-                    'YYYY-MM-DD',
-                )} ${moment(addScheduleState.startDateTime).format('HH:mm')}`,
-            ).format('YYYY-MM-DD HH:mm')
 
-            const endDate = moment(
-                `${moment(addScheduleState.endDate).format(
-                    'YYYY-MM-DD',
-                )} ${moment(addScheduleState.endDateTime).format('HH:mm')}`,
-            ).format('YYYY-MM-DD HH:mm')
+            const startDate = combineDateTime(
+                payload.startDate,
+                payload.startDateTime,
+            )
 
-            const payload = {
-                roomId: addScheduleState.room,
-                name: addScheduleState.name,
-                surname: addScheduleState.surname,
-                middlename: addScheduleState.middlename,
+            const endDate = combineDateTime(
+                payload.endDate,
+                payload.endDateTime,
+            )
+
+            await scheduleApi.createSchedule({
+                roomId: payload.room,
+                name: payload.name,
+                surname: payload.surname,
+                middlename: payload.middlename,
                 startDate: startDate,
                 endDate: endDate,
-                price: addScheduleState.totalPrice,
-            }
+                price: payload.totalPrice,
+            })
 
-            await scheduleApi.createSchedule(payload)
-
-            resetAddScheduleState()
             successCallback?.()
 
             ElNotification({
