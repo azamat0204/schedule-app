@@ -33,7 +33,7 @@ export const useRoom = () => {
             schedule: room.Schedules.map((schedule) => ({
                 id: schedule.id,
                 roomId: schedule.roomId,
-                text: `ФИО: ${schedule.surname} ${schedule.name} ${schedule.middlename}. Цена: ${schedule.price}тенге`,
+                text: `${schedule.surname} ${schedule.name} ${schedule.middlename}. Цена: ${schedule.price} тенге`,
                 start: schedule.startDate,
                 end: schedule.endDate,
             })),

@@ -19,9 +19,11 @@
             @confirm="deleteEvent"
         >
             <template #reference>
-                <span style="float: right; padding: 5px">✖</span>
+                <span class="delete-icon">✖</span>
             </template>
         </el-popconfirm>
+
+        <span class="edit-icon" @click="editEvent">✎</span>
 
         <el-tooltip
             placement="top"
@@ -233,6 +235,10 @@ export default defineComponent({
             emit('delete-schedule-data', props.rowIndex, props.keyNo)
         }
 
+        const editEvent = () => {
+            emit('edit-schedule-pencil-click', props.rowIndex, props.keyNo)
+        }
+
         const mousemove = (e) => {
             if (
                 props.rowIndex === props.isSelectingRowIndex &&
@@ -337,9 +343,34 @@ export default defineComponent({
             mousemove,
             mouseup,
             formatDisplayDate,
+            editEvent,
         }
     },
 })
 </script>
 
-<style scoped></style>
+<style scoped>
+.delete-icon {
+    float: right;
+    padding: 5px;
+    transition: 0.3s all ease;
+
+    &:hover {
+        transform: scale(1.3);
+    }
+}
+
+.edit-icon {
+    float: right;
+    padding: 6px 5px;
+    height: 15px;
+    font-size: 17px;
+    display: flex;
+    align-items: center;
+    transition: 0.3s all ease;
+
+    &:hover {
+        transform: scale(1.3);
+    }
+}
+</style>

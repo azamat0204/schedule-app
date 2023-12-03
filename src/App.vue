@@ -132,6 +132,7 @@
                         @move-event="updateScheduleWrapper"
                         @edit-event="updateScheduleWrapper"
                         @delete-event="deleteScheduleWrapper"
+                        @edit-schedule-pencil-click="editSchedulePencilClick"
                     ></sc>
                 </div>
             </div>
@@ -172,6 +173,10 @@ const {
     updateScheduleDate,
 } = useSchedule()
 
+const editSchedulePencilClick = (rowIndex, keyNo) => {
+    const targetData = sourceData.value[rowIndex].schedule[keyNo]
+    console.log(targetData)
+}
 const createScheduleWrapper = () => createSchedule(fetchSourceData)
 const deleteScheduleWrapper = (rowIndex, keyNo) => {
     const id = sourceData.value[rowIndex].schedule[keyNo].id

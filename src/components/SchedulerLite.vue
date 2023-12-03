@@ -137,6 +137,13 @@
                                 "
                                 @move-schedule-data="moveScheduleData"
                                 @edit-schedule-data="editScheduleData"
+                                @edit-schedule-pencil-click="
+                                    $emit(
+                                        'edit-schedule-pencil-click',
+                                        index,
+                                        keyNo,
+                                    )
+                                "
                                 @delete-schedule-data="deleteScheduleData"
                                 @mouse-up="selectEndTime"
                                 @move-event="$emit('move-event')"
@@ -219,7 +226,7 @@ export default defineComponent({
     });
 
     const setDragenterRow = (rowIndex) => state.dragenterRowIndex = rowIndex;
-
+    
     const setDragenterRowAndIndex = (rowIndex, currentIndex) => {
       state.dragenterRowIndex = rowIndex;
       state.dragenterKeyIndex = currentIndex;
@@ -261,11 +268,11 @@ export default defineComponent({
         endDateText
     ) => {
       for (
-          var n = 0;
+          let n = 0;
           n < props.scheduleData[newRowIndex].schedule.length;
           n++
       ) {
-        if (n != index || oldRowIndex != newRowIndex) {
+        if (n !== index || oldRowIndex !== newRowIndex) {
           let diffData = props.scheduleData[newRowIndex].schedule[n];
           if (
               new Date(diffData.start) - new Date(startDateText) >= 0 &&
