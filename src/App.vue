@@ -102,7 +102,7 @@
                         type="primary"
                         :loading="createScheduleLoading"
                         :disabled="v$.$invalid"
-                        @click="createSchedule"
+                        @click="createScheduleWrapper"
                     >
                         Добавить расписание
                     </el-button>
@@ -129,12 +129,9 @@
                     <sc
                         :schedule-data="sourceData"
                         :setting="setting"
-                        @row-click-event="rowClickEvent"
-                        @click-event="clickEvent"
-                        @add-event="addEvent"
                         @move-event="updateScheduleWrapper"
                         @edit-event="updateScheduleWrapper"
-                        @delete-event="deleteSchedule"
+                        @delete-event="deleteScheduleWrapper"
                     ></sc>
                 </div>
             </div>
@@ -151,166 +148,58 @@
     </div>
 </template>
 
-<script>
-import moment from 'moment'
-import schedulerLite from './components/SchedulerLite.vue'
+<script setup>
+import sc from './components/SchedulerLite.vue'
 import { useSchedule } from '@/composables/useSchedule.js'
 import { vMaska } from 'maska'
 import { useRoom } from '@/composables/useRoom.js'
 import { useGlobalLoading } from '@/composables/useGlobalLoading'
 import { ElMessage } from 'element-plus'
+import { onMounted } from 'vue'
+import { useScheduleSetting } from '@/composables/useScheduleSetting'
 
-export default {
-    name: 'App',
-    directives: { maska: vMaska },
-    components: {
-        sc: schedulerLite,
-    },
-    setup() {
-        const { fetchSourceData, sourceData, rooms } = useRoom()
+const { monthDate, setting, setDateToLastHalfYear, setMonthDate } =
+    useScheduleSetting()
 
-        const {
-            v$,
-            addScheduleState,
-            resetAddScheduleState,
-            createSchedule,
-            createScheduleLoading,
-            deleteSchedule,
-            updateScheduleDate,
-        } = useSchedule()
+const { fetchSourceData, sourceData, rooms } = useRoom()
 
-        const { lazyGlobalSourceDataLoading } = useGlobalLoading()
-        const createScheduleWrapper = () => createSchedule(fetchSourceData)
-        const deleteScheduleWrapper = (rowIndex, keyNo) => {
-            const id = sourceData.value[rowIndex].schedule[keyNo].id
-            deleteSchedule(id, fetchSourceData)
-        }
+const {
+    v$,
+    resetAddScheduleState,
+    createSchedule,
+    createScheduleLoading,
+    deleteSchedule,
+    updateScheduleDate,
+} = useSchedule()
 
-        const updateScheduleWrapper = (
-            status,
-            startDate,
-            endDate,
-            id,
-            roomId,
-        ) => {
-            if (status === 1) {
-                updateScheduleDate(
-                    { id, roomId, startDate, endDate },
-                    fetchSourceData,
-                )
-            } else if (status === 2) {
-                ElMessage({
-                    type: 'info',
-                    message: 'Нельзя переместить, дата забронирована',
-                })
-            } else {
-                ElMessage({
-                    type: 'info',
-                    message: 'Нельзя переместить, не рабочий день',
-                })
-            }
-        }
-
-        return {
-            rooms,
-            fetchSourceData,
-            updateScheduleWrapper,
-            sourceData,
-            lazyGlobalSourceDataLoading,
-            addScheduleState,
-            v$,
-            resetAddScheduleState,
-            createScheduleLoading,
-            updateScheduleDate,
-            createSchedule: createScheduleWrapper,
-            deleteSchedule: deleteScheduleWrapper,
-        }
-    },
-    data: function () {
-        return {
-            monthDate: '',
-            startDate: null,
-            scData: [],
-            setting: {
-                startDate: '2023-01-01',
-                endDate: '2023-12-01',
-                unit: 60, // Minutes
-                borderW: 1, // Px
-                dateDivH: 25, // Высота дней (месяцев в будущем)
-                timeDivH: 25, // Высота времени (дней в будушем)
-                unitDivW: 40, // Ширина отдельной ячейки в таблице
-                titleDivW: 20, //  Длина навзвании комнат в процентах
-                rowH: 50, //  Высота столбцов в px
-            },
-        }
-    },
-    created() {
-        //this.setDateToLastHalfYear()
-        this.fetchSourceData()
-    },
-    methods: {
-        setMonthDate(value) {
-            this.monthDate = value
-
-            if (value) {
-                this.setting.startDate = moment(value[0]).format('YYYY-MM-DD')
-                this.setting.endDate = moment(value[1]).format('YYYY-MM-DD')
-            }
-        },
-        setDateToLastHalfYear() {
-            const currentMonth = moment().set('date', 1)
-            const todayPlusSixMonth = moment().add(6, 'months')
-            this.monthDate = [currentMonth.toDate(), todayPlusSixMonth.toDate()]
-            this.setting.startDate = currentMonth.format('YYYY-MM-DD')
-            this.setting.endDate = todayPlusSixMonth.format('YYYY-MM-DD')
-        },
-        rowClickEvent(rowIndex, text) {
-            console.log('------')
-            console.log('RowClickEvent:')
-            console.log('RowIndex:' + rowIndex)
-            console.log('RowTitle:' + text)
-        },
-        clickEvent(startDate, endDate, text, other) {
-            console.log('------')
-            console.log('ClickEvent:')
-            console.log('StartDate:' + startDate)
-            console.log('EndDate:' + endDate)
-            console.log('ContentText:' + text)
-            if (other) {
-                console.log('OtherData:')
-                console.log(other)
-            }
-        },
-        addEvent(rowIndex, startDate, endDate) {
-            console.log('------')
-            console.log('AddEvent:')
-            console.log('RowIndex:' + rowIndex)
-            console.log('StartDate:' + startDate)
-            console.log('EndDate:' + endDate)
-        },
-        editEvent(newStartDate, newEndDate) {
-            console.log('------')
-            console.log('EditEvent:')
-            console.log('NewStartDate:' + newStartDate)
-            console.log('NewEndDate:' + newEndDate)
-        },
-        deleteEvent(row, index) {
-            console.log('------')
-            console.log('DeleteEvent:')
-            console.log('Row:' + row)
-            console.log('Index:' + index)
-        },
-        addNewRow() {
-            let newTitle = 'Room' + (this.scData.length + 1)
-            this.scData.push({
-                title: newTitle,
-                noBusinessDate: [],
-                businessHours: [],
-                schedule: [],
-            })
-        },
-    },
+const createScheduleWrapper = () => createSchedule(fetchSourceData)
+const deleteScheduleWrapper = (rowIndex, keyNo) => {
+    const id = sourceData.value[rowIndex].schedule[keyNo].id
+    deleteSchedule(id, fetchSourceData)
 }
+
+const updateScheduleWrapper = (status, startDate, endDate, id, roomId) => {
+    if (status === 1) {
+        updateScheduleDate({ id, roomId, startDate, endDate }, fetchSourceData)
+    } else if (status === 2) {
+        ElMessage({
+            type: 'info',
+            message: 'Нельзя переместить, дата забронирована',
+        })
+    } else {
+        ElMessage({
+            type: 'info',
+            message: 'Нельзя переместить, не рабочий день',
+        })
+    }
+}
+
+const { lazyGlobalSourceDataLoading } = useGlobalLoading()
+
+onMounted(() => {
+    fetchSourceData()
+    setDateToLastHalfYear()
+})
 </script>
 
 <style lang="scss">

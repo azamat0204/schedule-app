@@ -229,7 +229,6 @@ export default defineComponent({
 
     const getHeaderDate = (n) => moment(addMonths(new Date(state.settingData.startDate), n)).format('DD-MM-YYYY')
     const datetimeFormatter = (dateObj) => moment(dateObj).format('YYYY/MM/DD')
-
     const addMonths =(dateObj, n) => moment(dateObj).add(n, 'months').toDate()
 
     const addMinutes = (dateObj, n) => moment(dateObj).add(n, 'minutes').toDate()
