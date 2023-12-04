@@ -122,10 +122,8 @@
                         @update:model-value="setMonthDate"
                     />
                 </div>
-                <div
-                    v-loading="lazyGlobalSourceDataLoading"
-                    class="content__body"
-                >
+                {{ lazyGlobalSourceDataLoading }}
+                <div v-loading="globalSourceDataLoading" class="content__body">
                     <sc
                         :schedule-data="sourceData"
                         :setting="setting"
@@ -185,7 +183,6 @@ const edittingReservedData = ref(null)
 
 const editSchedulePencilClick = (rowIndex, keyNo) => {
     const targetData = sourceData.value[rowIndex].schedule[keyNo]
-    console.log('called ', targetData, rowIndex, keyNo, showEditModal.value)
     edittingReservedData.value = targetData
     showEditModal.value = true
 }
@@ -216,7 +213,8 @@ const updateScheduleWrapper = (status, startDate, endDate, id, roomId) => {
     }
 }
 
-const { lazyGlobalSourceDataLoading } = useGlobalLoading()
+const { lazyGlobalSourceDataLoading, globalSourceDataLoading } =
+    useGlobalLoading()
 
 onMounted(() => {
     fetchSourceData()

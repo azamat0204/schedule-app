@@ -8,13 +8,11 @@ export const useGlobalLoading = () => {
         () => globalSourceDataLoading.value,
         () => {
             clearTimeout(timerId.value)
-            console.log('called ', globalSourceDataLoading.value)
             if (globalSourceDataLoading.value) {
                 timerId.value = setTimeout(() => {
                     lazyGlobalSourceDataLoading.value = true
                 }, 100)
             } else {
-                clearTimeout(timerId.value)
                 lazyGlobalSourceDataLoading.value = false
             }
         },
@@ -30,6 +28,7 @@ export const useGlobalLoading = () => {
     return {
         setGlobalLoadingOn,
         setGlobalLoadingOff,
-        lazyGlobalSourceDataLoading,
+        lazyGlobalSourceDataLoading: globalSourceDataLoading,
+        globalSourceDataLoading,
     }
 }

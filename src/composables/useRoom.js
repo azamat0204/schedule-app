@@ -5,7 +5,8 @@ import { useGlobalLoading } from '@/composables/useGlobalLoading'
 
 const sourceData = ref([])
 
-const { setGlobalLoadingOn, setGlobalLoadingOff } = useGlobalLoading()
+const { setGlobalLoadingOn, setGlobalLoadingOff, lazyGlobalSourceDataLoading } =
+    useGlobalLoading()
 const fetchSourceData = async () => {
     try {
         setGlobalLoadingOn()
@@ -20,6 +21,7 @@ const fetchSourceData = async () => {
         console.error(e.message)
     } finally {
         setGlobalLoadingOff()
+        console.log(lazyGlobalSourceDataLoading.value)
     }
 }
 
