@@ -28,7 +28,6 @@ export const useGlobalLoading = () => {
     return {
         setGlobalLoadingOn,
         setGlobalLoadingOff,
-        lazyGlobalSourceDataLoading: globalSourceDataLoading,
-        globalSourceDataLoading,
+        lazyGlobalSourceDataLoading,
     }
 }

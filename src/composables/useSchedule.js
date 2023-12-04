@@ -6,7 +6,7 @@ import * as scheduleApi from '../api/schedule'
 import { useGlobalLoading } from '@/composables/useGlobalLoading'
 import { combineDateTime } from '@/helpers/combineDateTime'
 
-export const useSchedule = () => {
+export const useSchedule = (scope = 'schedule') => {
     const { setGlobalLoadingOff, setGlobalLoadingOn } = useGlobalLoading()
 
     const addScheduleInitialState = {
@@ -53,7 +53,7 @@ export const useSchedule = () => {
             required: helpers.withMessage('Заполните поле', required),
         },
     }
-    const v$ = useVuelidate(rules, addScheduleState)
+    const v$ = useVuelidate(rules, addScheduleState, { $scope: scope })
 
     const resetAddScheduleState = () => {
         Object.assign(addScheduleState, addScheduleInitialState)

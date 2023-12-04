@@ -144,7 +144,7 @@ import { useGlobalLoading } from '@/composables/useGlobalLoading'
 
 const { fetchSourceData } = useRoom()
 const { v$, addScheduleState, updateScheduleDate, resetAddScheduleState } =
-    useSchedule()
+    useSchedule('edit-schedule')
 const { lazyGlobalSourceDataLoading } = useGlobalLoading()
 
 const emit = defineEmits(['update:model-value'])

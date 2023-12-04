@@ -122,8 +122,10 @@
                         @update:model-value="setMonthDate"
                     />
                 </div>
-                {{ lazyGlobalSourceDataLoading }}
-                <div v-loading="globalSourceDataLoading" class="content__body">
+                <div
+                    v-loading="lazyGlobalSourceDataLoading"
+                    class="content__body"
+                >
                     <sc
                         :schedule-data="sourceData"
                         :setting="setting"
@@ -213,8 +215,7 @@ const updateScheduleWrapper = (status, startDate, endDate, id, roomId) => {
     }
 }
 
-const { lazyGlobalSourceDataLoading, globalSourceDataLoading } =
-    useGlobalLoading()
+const { lazyGlobalSourceDataLoading } = useGlobalLoading()
 
 onMounted(() => {
     fetchSourceData()
