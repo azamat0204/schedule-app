@@ -16,6 +16,7 @@
     "core-js": "^3.8.3",
     "dayjs": "^1.11.10",
     "element-plus": "^2.4.3",
+    "http-server": "^14.1.1",
     "maska": "^2.1.10",
     "moment": "^2.29.4",
     "sass": "^1.69.5",
