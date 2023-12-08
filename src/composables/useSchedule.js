@@ -5,6 +5,7 @@ import { ElNotification } from 'element-plus'
 import * as scheduleApi from '../api/schedule'
 import { useGlobalLoading } from '@/composables/useGlobalLoading'
 import { combineDateTime } from '@/helpers/combineDateTime'
+import moment from "moment";
 
 export const useSchedule = (scope = 'schedule') => {
     const { setGlobalLoadingOff, setGlobalLoadingOn } = useGlobalLoading()
@@ -23,6 +24,11 @@ export const useSchedule = (scope = 'schedule') => {
     const addScheduleState = reactive({
         ...addScheduleInitialState,
     })
+
+    const isEndDateGreaterThatStartDate = (value, siblings) => {
+        if(!value || !siblings) return true
+        return moment(value).toDate().getTime() >= moment(siblings.startDate).toDate().getTime()
+    }
 
     const rules = {
         name: {
@@ -48,6 +54,7 @@ export const useSchedule = (scope = 'schedule') => {
         },
         endDate: {
             required: helpers.withMessage('Заполните поле', required),
+            isEndDateGreaterThatStartDate
         },
         endDateTime: {
             required: helpers.withMessage('Заполните поле', required),
@@ -77,6 +84,7 @@ export const useSchedule = (scope = 'schedule') => {
                 payload.endDateTime,
             )
 
+
             await scheduleApi.createSchedule({
                 roomId: payload.room,
                 name: payload.name,
@@ -97,7 +105,7 @@ export const useSchedule = (scope = 'schedule') => {
         } catch (e) {
             ElNotification({
                 title: 'Ошибка',
-                message: 'Не удалось добавить расписание',
+                message: 'Не удалось добавить расписание: ' + e.message,
                 type: 'error',
             })
             console.error(e.message)

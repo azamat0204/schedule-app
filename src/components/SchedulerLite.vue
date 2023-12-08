@@ -76,9 +76,10 @@
                                             state.settingData.timeDivH -
                                             8 +
                                             'px',
+                                            backgroundColor: getWeekDayName(n, count) === 'СБ' || getWeekDayName(n, count) === 'ВС' ? '#f56c6c' : ''
                                     }"
                                 >
-                                    {{ count }}
+                                    {{ count }} {{ getWeekDayName(n, count) }}
                                 </div>
                             </template>
                         </div>
@@ -166,6 +167,7 @@
                                         detail.data,
                                     )
                                 "
+                                :class="{'almostEnd':isBookingEndDay(detail.end)}"
                             ></reserved-div>
                         </div>
                     </div>
@@ -239,6 +241,10 @@ export default defineComponent({
     const addMonths =(dateObj, n) => moment(dateObj).add(n, 'months').toDate()
 
     const addMinutes = (dateObj, n) => moment(dateObj).add(n, 'minutes').toDate()
+
+    const getWeekDayName  = (n, day) => moment(addMonths(new Date(state.settingData.startDate), n - 1)).set('date', day).locale('ru').format('dd').toUpperCase()
+
+    const isBookingEndDay = (day) => moment(day).format('DD-MM-YYYY') === moment().format('DD-MM-YYYY')
 
     const isBusiness = (rowIndex, n) => {
       let noBusinessDate = props.scheduleData[rowIndex].noBusinessDate.map((businessDate) => moment(businessDate).format('YYYY-MM-DD'))
@@ -572,7 +578,9 @@ export default defineComponent({
       getMonthsCount,
       getDateWidth,
       getContentWidth,
-      getUnitCounts
+      getUnitCounts,
+      getWeekDayName,
+      isBookingEndDay
     };
   },
 });
@@ -690,15 +698,19 @@ export default defineComponent({
 }
 
 .cant-res {
-  background-color: #999 !important;
+  background-color: #999;
 }
 
 .isMe {
-  background-color: #108000 !important;
+  background-color: #108000;
 }
 
 .notMe {
-  background-color: #ec920a !important;
+  background-color: #ec920a;
+}
+
+.almostEnd{
+  background-color: #f56c6c;
 }
 
 /deep/ .sc-bar .head {

@@ -21,7 +21,6 @@ const fetchSourceData = async () => {
         console.error(e.message)
     } finally {
         setGlobalLoadingOff()
-        console.log(lazyGlobalSourceDataLoading.value)
     }
 }
 

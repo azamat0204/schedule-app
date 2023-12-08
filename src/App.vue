@@ -133,10 +133,12 @@
                         @edit-event="updateScheduleWrapper"
                         @delete-event="deleteScheduleWrapper"
                         @edit-schedule-pencil-click="editSchedulePencilClick"
+                        v-if="sourceData.length > 0"
                     ></sc>
+                  <el-empty v-else />
                 </div>
             </div>
-            <div style="display: flex">
+            <div style="display: flex"  v-if="sourceData.length > 0">
                 <span>Инструкция:</span>
                 <div class="sample"></div>
                 <span>Нормально</span>
@@ -144,6 +146,8 @@
                 <span>Не рабочий день</span>
                 <div class="sample reserved"></div>
                 <span>Забронировано</span>
+                <div class="sample almostEnd"></div>
+                <span>День выезда</span>
             </div>
         </div>
         <edit-schedule
@@ -223,7 +227,7 @@ onMounted(() => {
 })
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .sample {
     width: 10px;
     height: 10px;
@@ -237,6 +241,10 @@ onMounted(() => {
 
 .reserved {
     background-color: #ec920a !important;
+}
+
+.almostEnd{
+  background-color: #f56c6c;
 }
 
 .main {
