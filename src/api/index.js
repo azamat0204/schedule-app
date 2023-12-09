@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const axiosInstance = axios.create({
-    baseURL: 'https://schedule-backend.up.railway.app',
+    baseURL: 'http://localhost:3001',
 })
 
 export default axiosInstance

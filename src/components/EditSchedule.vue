@@ -137,6 +137,7 @@
 </template>
 <script setup>
 import { nextTick } from 'vue'
+import { vMaska } from "maska"
 import { useSchedule } from '@/composables/useSchedule'
 import { useRoom } from '@/composables/useRoom'
 import { combineDateTime } from '@/helpers/combineDateTime'

@@ -168,6 +168,7 @@ import { useSchedule } from '@/composables/useSchedule.js'
 import { useGlobalLoading } from '@/composables/useGlobalLoading'
 import { useScheduleSetting } from '@/composables/useScheduleSetting'
 import { vMaska } from 'maska'
+import moment from "moment"
 
 const { monthDate, setting, setDateToLastHalfYear, setMonthDate } =
     useScheduleSetting()
@@ -188,8 +189,7 @@ const showEditModal = ref(false)
 const edittingReservedData = ref(null)
 
 const editSchedulePencilClick = (rowIndex, keyNo) => {
-    const targetData = sourceData.value[rowIndex].schedule[keyNo]
-    edittingReservedData.value = targetData
+    edittingReservedData.value = sourceData.value[rowIndex].schedule[keyNo]
     showEditModal.value = true
 }
 const createScheduleWrapper = () =>

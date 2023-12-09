@@ -237,7 +237,7 @@ export default defineComponent({
     const disableDragendAnimation = (e) => e.preventDefault()
 
     const getHeaderDate = (n) => moment(addMonths(new Date(state.settingData.startDate), n)).locale('ru').format('MMMM YYYY').toUpperCase()
-    const datetimeFormatter = (dateObj) => moment(dateObj).format('YYYY/MM/DD')
+    const datetimeFormatter = (dateObj) => moment(dateObj).format('YYYY-MM-DD')
     const addMonths =(dateObj, n) => moment(dateObj).add(n, 'months').toDate()
 
     const addMinutes = (dateObj, n) => moment(dateObj).add(n, 'minutes').toDate()
@@ -273,6 +273,9 @@ export default defineComponent({
         startDateText,
         endDateText
     ) => {
+      const newScheduleStartDate = moment(startDateText).set('hour', 0).set({ hours: 0,minutes: 0, seconds: 0})
+      const newScheduleEndDate = moment(endDateText).set('hour', 0).set({ hours: 0,minutes: 0, seconds: 0})
+
       for (
           let n = 0;
           n < props.scheduleData[newRowIndex].schedule.length;
@@ -280,24 +283,25 @@ export default defineComponent({
       ) {
         if (n !== index || oldRowIndex !== newRowIndex) {
           let diffData = props.scheduleData[newRowIndex].schedule[n];
-          if (
-              new Date(diffData.start) - new Date(startDateText) >= 0 &&
-              new Date(diffData.end) - new Date(endDateText) <= 0
-          ) {
-            return true;
+          const roomStartDate =  moment(diffData.start).set({ hours: 0,minutes: 0, seconds: 0})
+          const roomEndDate = moment(diffData.end).set({ hours: 0,minutes: 0, seconds: 0})
+
+          if(roomStartDate.isBetween(newScheduleStartDate, newScheduleEndDate) ||
+              roomStartDate.isSame(newScheduleStartDate) || roomStartDate.isSame(newScheduleEndDate) ||
+              roomEndDate.isBetween(newScheduleStartDate, newScheduleEndDate) ||
+              roomEndDate.isSame(newScheduleStartDate) || roomEndDate.isSame(newScheduleEndDate)
+          ){
+            return true
           }
-          if (
-              new Date(diffData.start) - new Date(startDateText) >= 0 &&
-              new Date(diffData.start) - new Date(endDateText) < 0
-          ) {
-            return true;
+
+          if(newScheduleStartDate.isBetween(roomStartDate, roomEndDate) ||
+              newScheduleStartDate.isSame(roomStartDate) || newScheduleStartDate.isSame(roomEndDate) ||
+              newScheduleEndDate.isBetween(roomStartDate, roomEndDate) ||
+              newScheduleEndDate.isSame(roomStartDate) || newScheduleEndDate.isSame(roomEndDate)
+          ){
+            return true
           }
-          if (
-              new Date(diffData.start) - new Date(startDateText) <= 0 &&
-              new Date(diffData.end) - new Date(startDateText) > 0
-          ) {
-            return true;
-          }
+
         }
       }
       return false;
@@ -484,11 +488,12 @@ export default defineComponent({
       let targetData = props.scheduleData[rowIndex].schedule[keyNo];
       if (targetData) {
         let changeDatetimeText = (datetimeText) => {
-          const newDateObj = moment(datetimeText).add(unitCnt - 1, 'days')
+          const newDateObj = moment(datetimeText).add(unitCnt, 'days')
           return datetimeFormatter(newDateObj);
         };
 
         let newEndText = changeDatetimeText(targetData.end);
+        console.log(newEndText, targetData.end)
         if (
             hasOtherEvent(keyNo, rowIndex, rowIndex, targetData.start, newEndText)
         ) {

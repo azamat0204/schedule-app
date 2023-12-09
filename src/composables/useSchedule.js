@@ -1,7 +1,7 @@
 import { nextTick, reactive, ref } from 'vue'
 import { required, helpers } from '@vuelidate/validators'
 import { useVuelidate } from '@vuelidate/core'
-import { ElNotification } from 'element-plus'
+import {ElMessage, ElNotification} from 'element-plus'
 import * as scheduleApi from '../api/schedule'
 import { useGlobalLoading } from '@/composables/useGlobalLoading'
 import { combineDateTime } from '@/helpers/combineDateTime'
@@ -103,12 +103,19 @@ export const useSchedule = (scope = 'schedule') => {
                 type: 'success',
             })
         } catch (e) {
-            ElNotification({
-                title: 'Ошибка',
-                message: 'Не удалось добавить расписание: ' + e.message,
-                type: 'error',
-            })
-            console.error(e.message)
+            if(e.request.status === 403){
+                ElMessage({
+                    type: 'info',
+                    message: 'Нельзя добавить, уже есть запись на эту дату',
+                })
+            }else{
+                ElNotification({
+                    title: 'Ошибка',
+                    message: 'Не удалось добавить расписание: ' + e.message,
+                    type: 'error',
+                })
+                console.error(e.message)
+            }
         } finally {
             createScheduleLoading.value = false
         }
@@ -142,12 +149,19 @@ export const useSchedule = (scope = 'schedule') => {
             await scheduleApi.updateScheduleDate(payload)
             successCallback?.()
         } catch (e) {
-            ElNotification({
-                title: 'Ошибка',
-                message: 'Не удалось изменить расписание',
-                type: 'error',
-            })
-            console.error(e.message)
+            if(e.request.status === 403){
+                ElMessage({
+                    type: 'info',
+                    message: 'Нельзя изменить, уже есть запись на эту дату',
+                })
+            }else{
+                ElNotification({
+                    title: 'Ошибка',
+                    message: 'Не удалось добавить расписание: ' + e.message,
+                    type: 'error',
+                })
+                console.error(e.message)
+            }
         } finally {
             setGlobalLoadingOff()
         }
