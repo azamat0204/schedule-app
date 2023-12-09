@@ -274,8 +274,8 @@ export default defineComponent({
         startDateText,
         endDateText
     ) => {
-      const newScheduleStartDate = moment(startDateText).set('hour', 0).set({ hours: 0,minutes: 0, seconds: 0})
-      const newScheduleEndDate = moment(endDateText).set('hour', 0).set({ hours: 0,minutes: 0, seconds: 0})
+      const newScheduleStartDate = moment(startDateText).set({ hours: 0,minutes: 0, seconds: 0})
+      const newScheduleEndDate = moment(endDateText).set({ hours: 0,minutes: 0, seconds: 0})
 
       for (
           let n = 0;
@@ -287,6 +287,7 @@ export default defineComponent({
           const roomStartDate =  moment(diffData.start).set({ hours: 0,minutes: 0, seconds: 0})
           const roomEndDate = moment(diffData.end).set({ hours: 0,minutes: 0, seconds: 0})
 
+          console.log(newScheduleStartDate,newScheduleEndDate, roomStartDate, roomEndDate )
           if(roomStartDate.isBetween(newScheduleStartDate, newScheduleEndDate) ||
               roomStartDate.isSame(newScheduleStartDate) || roomStartDate.isSame(newScheduleEndDate) ||
               roomEndDate.isBetween(newScheduleStartDate, newScheduleEndDate) ||
