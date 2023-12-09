@@ -112,7 +112,7 @@ export default defineComponent({
         const setWidth = () => {
             const a = moment(props.startText)
             const b = moment(props.endText)
-            const rightDiff = Math.ceil(b.diff(a, 'days', true)) + 1
+            const rightDiff = Math.floor(b.diff(a, 'days', true)) + 1
             state.endLineNo = state.startLineNo + rightDiff
             let width =
                 props.unitWidth * rightDiff + rightDiff * props.borderWidth
