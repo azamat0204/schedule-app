@@ -244,7 +244,6 @@ export default defineComponent({
     const addMinutes = (dateObj, n) => moment(dateObj).add(n, 'minutes').toDate()
 
     const getWeekDayName  = (n, day) => moment(addMonths(new Date(state.settingData.startDate), n - 1)).set('date', day).locale('ru').format('dd').toUpperCase()
-
     const isBookingEndDay = (day) => moment(day).format('DD-MM-YYYY') === moment().format('DD-MM-YYYY')
 
     const isBusiness = (rowIndex, n) => {
