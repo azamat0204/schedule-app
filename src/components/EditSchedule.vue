@@ -117,6 +117,16 @@
             />
         </div>
 
+        <el-input
+            v-model="v$.comment.$model"
+            type="textarea"
+            placeholder="Комментарий"
+            clearable
+            maxlength="90"
+            rows="4"
+            show-word-limit
+        />
+
         <div class="actions">
             <el-button
                 type="danger"
@@ -166,6 +176,7 @@ const updateScheduleDateWrapper = () =>
                 addScheduleState.endDate,
                 addScheduleState.endDateTime,
             ),
+          comment: addScheduleState.comment
         },
         () => {
             fetchSourceData()
@@ -189,6 +200,8 @@ const initReservedData = () => {
     addScheduleState.middlename = props.reservedData.middlename
     addScheduleState.totalPrice = props.reservedData.price
     addScheduleState.room = props.reservedData.roomId
+    addScheduleState.comment = props.reservedData.comment
+
     nextTick(() => {
         v$.value.$reset()
     })

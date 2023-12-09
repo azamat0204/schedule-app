@@ -20,7 +20,9 @@ export const useSchedule = (scope = 'schedule') => {
         startDateTime: '',
         endDate: '',
         endDateTime: '',
+        comment: ''
     }
+
     const addScheduleState = reactive({
         ...addScheduleInitialState,
     })
@@ -59,6 +61,9 @@ export const useSchedule = (scope = 'schedule') => {
         endDateTime: {
             required: helpers.withMessage('Заполните поле', required),
         },
+        comment: {
+
+        }
     }
     const v$ = useVuelidate(rules, addScheduleState, { $scope: scope })
 
@@ -93,6 +98,7 @@ export const useSchedule = (scope = 'schedule') => {
                 startDate: startDate,
                 endDate: endDate,
                 price: payload.totalPrice,
+                comment: payload.comment
             })
 
             successCallback?.()

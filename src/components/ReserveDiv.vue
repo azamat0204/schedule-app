@@ -42,9 +42,19 @@
             </span>
         </el-tooltip>
 
-        <el-tooltip placement="bottom" :content="contentText" trigger="click">
+        <div class="content">
+          <el-tooltip placement="bottom" :content="contentText" trigger="click">
             <span class="text">{{ contentText }}</span>
-        </el-tooltip>
+          </el-tooltip>
+
+          <el-tooltip
+              placement="top"
+              :content="comment"
+              v-if="!!comment"
+          >
+            <img class="comment-icon" src="@/assets/comment.svg" alt="comment-icon" width="14" height="14">
+          </el-tooltip>
+        </div>
 
         <div
             class="resizable-e"
@@ -71,6 +81,7 @@ export default defineComponent({
         startText: String,
         endText: String,
         contentText: String,
+        comment: String,
         minDate: String,
         maxDate: String,
         unit: Number,
@@ -363,6 +374,15 @@ export default defineComponent({
     }
 }
 
+.comment-icon{
+  transition: 0.3s all ease;
+
+  &:hover {
+    transform: scale(1.3);
+  }
+}
+
+
 .edit-icon {
     float: right;
     padding: 6px 5px;
@@ -375,5 +395,14 @@ export default defineComponent({
     &:hover {
         transform: scale(1.3);
     }
+}
+
+.content{
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  padding: 0 15px 0;
+  gap: 15px;
+  width: 100%;
 }
 </style>

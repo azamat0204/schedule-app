@@ -94,9 +94,18 @@
                         @blur="v$.endDateTime.$touch"
                     />
                 </div>
-                <div class="add-box__actions">
+                <div class="add-box__bottom">
+                  <el-input
+                      v-model="v$.comment.$model"
+                      placeholder="Комментарий"
+                      clearable
+                      maxlength="90"
+                      show-word-limit
+                  />
+
+                  <div class="add-box__actions">
                     <el-button type="danger" @click="resetAddScheduleState">
-                        Очистить форму
+                      Очистить форму
                     </el-button>
                     <el-button
                         type="primary"
@@ -104,8 +113,9 @@
                         :disabled="v$.$invalid"
                         @click="createScheduleWrapper"
                     >
-                        Добавить расписание
+                      Добавить расписание
                     </el-button>
+                  </div>
                 </div>
             </div>
             <div class="content">
@@ -293,10 +303,16 @@ onMounted(() => {
         }
     }
 
+    &__bottom{
+      display: flex;
+      align-items: center;
+      margin-top: 20px;
+      gap: 15px;
+    }
+
     &__actions {
         display: flex;
         justify-content: flex-end;
-        margin-top: 20px;
     }
 }
 

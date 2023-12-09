@@ -41,6 +41,7 @@ const getMappedRooms = (rooms) => {
             name: schedule.name,
             middlename: schedule.middlename,
             price: schedule.price,
+            comment: schedule.comment
         })),
     }))
 }

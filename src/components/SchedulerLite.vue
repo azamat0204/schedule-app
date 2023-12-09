@@ -117,6 +117,7 @@
                                 :key-no="keyNo"
                                 :start-text="detail.start"
                                 :end-text="detail.end"
+                                :comment="detail.comment"
                                 :content-text="detail.text"
                                 :unit-width="state.settingData.unitDivW"
                                 :unit-height="state.settingData.rowH"
@@ -493,7 +494,7 @@ export default defineComponent({
         };
 
         let newEndText = changeDatetimeText(targetData.end);
-        console.log(newEndText, targetData.end)
+
         if (
             hasOtherEvent(keyNo, rowIndex, rowIndex, targetData.start, newEndText)
         ) {
@@ -728,7 +729,6 @@ export default defineComponent({
 
 /deep/ .sc-bar .text {
   display: block;
-  padding: 5px 15px 0;
   font-weight: bold;
   height: 18px;
   overflow: hidden;
